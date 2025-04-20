@@ -3,14 +3,14 @@ const updateSettings = async (data, type) => {
   try {
     const url =
       type === 'password'
-        ? 'http://localhost:3000/api/v1/users/updateMyPassword'
-        : 'http://localhost:3000/api/v1/users/updateMe';
+        ? '/api/v1/users/updateMyPassword'
+        : '/api/v1/users/updateMe';
     const res = await axios({
       method: 'PATCH',
       url,
       data,
     });
-    console.log('RESPONSE:', res.data);
+    // console.log('RESPONSE:', res.data);
     if (res.data.status === 'Success' || res.data.status === 'success') {
       console.log('Password update success');
       document.querySelector('.form__user-photo').src =
@@ -31,7 +31,6 @@ if (userDataForm)
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
 
-    console.log(form);
     updateSettings(form, 'data');
   });
 

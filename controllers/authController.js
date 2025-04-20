@@ -72,7 +72,6 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   const newUser = await User.create(userData);
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
   await new Email(newUser, url).sendWelcome();
   createSendToken(newUser, 201, res);
 });
@@ -197,8 +196,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 //Only for rendered pages, no errors !!
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  // console.log('[isLoggedIn] checking cookies:', req.cookies);
-
   if (req.cookies && req.cookies.jwt) {
     try {
       // 1) Verify token
