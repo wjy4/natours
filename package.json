@@ -4,7 +4,8 @@
   "description": "Learning Express, node and mongodb",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "nodemon --inspect server.js & sleep 2 && open -a /Applications/Chromium.app http://localhost:9229",
     "watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/build --no-content-hash",
@@ -51,5 +52,8 @@
     "eslint-plugin-react": "^7.37.4",
     "parcel": "^2.14.4",
     "prettier": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
