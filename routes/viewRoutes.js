@@ -1,32 +1,12 @@
 const express = require('express');
 const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
-const reviewController = require('../controllers/reviewController');
+
 const router = express.Router();
 
-// router.use(authController.isLoggedIn);
+router.use(viewsController.alerts);
 
-// router.get(
-//   '/',
-//   authController.isLoggedIn,
-//   bookingController.createBookingCheckout,
-//   authController.isLoggedIn,
-//   viewsController.getOverview,
-// );
 router.get('/', authController.isLoggedIn, viewsController.getOverview);
-
-router.get(
-  '/submit-review/:tourId',
-  authController.protect, // ✅ 替换 protect
-  reviewController.renderReviewForm,
-);
-
-router.get(
-  '/me/reviews',
-  authController.protect,
-  reviewController.renderMyReviews,
-);
 
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
@@ -39,4 +19,5 @@ router.post(
   authController.protect,
   viewsController.updateUserData,
 );
+
 module.exports = router;

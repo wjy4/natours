@@ -1,17 +1,19 @@
 const express = require('express');
-const reviewController = require('../controllers/reviewController');
-const authController = require('../controllers/authController');
+const reviewController = require('./../controllers/reviewController');
+const authController = require('./../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
-// 🔒 所有 review 路由都需要登录
 router.use(authController.protect);
 
-router.route('/').get(reviewController.getAllReviews).post(
-  authController.restrictTo('user'), // ✅ 只有普通用户能评论
-  reviewController.setTourUserIds, // ✅ 自动补充 tour 和 user
-  reviewController.createReviews, // ✅ 验证是否真的预定过
-);
+router
+  .route('/')
+  .get(reviewController.getAllReviews)
+  .post(
+    authController.restrictTo('user'),
+    reviewController.setTourUserIds,
+    reviewController.createReview,
+  );
 
 router
   .route('/:id')
