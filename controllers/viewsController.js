@@ -9,7 +9,7 @@ exports.getOverview = catchAsync(async (req, res) => {
   const tours = await Tour.find();
   //2 ) Build template
   //3) Render that template using tour data from step 1
-
+  console.log('⚡️ [getOverview] Rendering overview page...');
   res.status(200).render('overview', {
     title: 'All Tours',
     tours,

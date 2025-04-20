@@ -7,13 +7,14 @@ const router = express.Router();
 
 // router.use(authController.isLoggedIn);
 
-router.get(
-  '/',
-  authController.isLoggedIn,
-  bookingController.createBookingCheckout,
-  authController.isLoggedIn,
-  viewsController.getOverview,
-);
+// router.get(
+//   '/',
+//   authController.isLoggedIn,
+//   bookingController.createBookingCheckout,
+//   authController.isLoggedIn,
+//   viewsController.getOverview,
+// );
+router.get('/', authController.isLoggedIn, viewsController.getOverview);
 
 router.get(
   '/submit-review/:tourId',
