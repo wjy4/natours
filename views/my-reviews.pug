@@ -1,0 +1,34 @@
+extends base
+
+block content
+  main.main
+    .user-view
+      .user-view__content
+        h2.heading-secondary My Reviews
+        |
+        |
+        |
+        if reviews.length
+          each review in reviews
+            .review-card
+              .review-card__header
+                h3.review-card__title= review.tour.name
+                span.review-card__date= new Date(review.createdAt).toLocaleDateString('en-GB')
+
+              p.review-card__text= review.review
+
+              .review-card__rating
+                - const stars = '⭐'.repeat(review.rating)
+                span= stars
+              a.btn.btn--small.btn--green(href=`/edit-review/${review._id}`) Edit Review
+
+        else
+          p.text-muted You haven't submitted any reviews yet.
+
+        if totalPages > 1
+          .pagination
+            if currentPage > 1
+              a.btn.btn--inline(href=`?page=${currentPage - 1}`) ← Prev
+            span Page #{currentPage} of #{totalPages}
+            if currentPage < totalPages
+              a.btn.btn--inline(href=`?page=${currentPage + 1}`) Next →

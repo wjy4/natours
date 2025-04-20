@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome",
+      "url": "http://localhost:3000", // 你的应用地址
+      "webRoot": "${workspaceFolder}", // 你的工作区路径
+      "runtimeExecutable": "/Applications/Chromium.app/Contents/MacOS/Chromium", // 替换为你的 Chromium 路径
+      "port": 9229 // 用于调试的端口
+    }
+  ]
+}
