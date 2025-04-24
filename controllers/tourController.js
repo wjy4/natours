@@ -66,8 +66,12 @@ exports.aliasTopTours = (req, res, next) => {
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.createTour = factory.createOne(Tour);
-exports.UpdateTour = factory.updateOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
+
 exports.deleteTour = factory.deleteOne(Tour);
+
+console.log('🧪 factory.updateOne: ', factory.updateOne); // ✅ 应该有函数体
+console.log('🧪 factory.UpdateOne: ', factory.UpdateOne); // ❌ 应该是 undefined
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

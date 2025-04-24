@@ -49,7 +49,7 @@ router
     authController.restrictTo('admin', 'lead-guide'),
     tourController.uploadTourImages,
     tourController.resizeTourImages,
-    tourController.UpdateTour,
+    tourController.updateTour,
   )
   .delete(
     authController.protect,
