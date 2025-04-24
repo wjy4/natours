@@ -35,22 +35,21 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  // 1) Get the data, for the requested tour (including reviews and guides)
-  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+  const slug = req.params.slug;
+  console.log(`[DEBUG] Searching for tour with slug: ${slug}`); // ✅ 打印请求的 slug
+
+  const tour = await Tour.findOne({ slug }).populate({
     path: 'reviews',
     fields: 'review rating user',
   });
 
   if (!tour) {
+    console.log(`[ERROR] No tour found for slug: ${slug}`); // ✅ 打印未找到的 slug
     return next(new AppError('There is no tour with that name.', 404));
   }
 
-  // 2) Build template
-  // 3) Render template using data from 1)
-  res.status(200).render('tour', {
-    title: `${tour.name} Tour`,
-    tour,
-  });
+  console.log(`[DEBUG] Found tour: ${tour.name}`); // ✅ 确认找到的 Tour
+  res.status(200).render('tour', { title: `${tour.name} Tour`, tour });
 });
 
 exports.getLoginForm = (req, res) => {
@@ -78,7 +77,6 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
     tours,
   });
 });
-
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,

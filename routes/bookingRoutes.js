@@ -12,9 +12,8 @@ router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router
   .route('/')
-  .get(bookingController.getAllBooking)
+  .get(bookingController.getAllBookings) // ✅ 使用复数
   .post(bookingController.createBooking);
-
 router
   .route('/:id')
   .get(bookingController.getBooking)
