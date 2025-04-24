@@ -13,24 +13,14 @@ exports.alerts = (req, res, next) => {
 };
 
 exports.getOverview = catchAsync(async (req, res, next) => {
+  // 1) Get tour data from collection
   const tours = await Tour.find();
 
-  const formattedTours = tours.map((tour) => {
-    return {
-      ...tour.toObject(),
-      startDateFormatted: tour.startDates?.[0]
-        ? new Date(tour.startDates[0]).toLocaleString('en-uk', {
-            month: 'long',
-            year: 'numeric',
-          })
-        : 'N/A',
-      locationsCount: tour.locations?.length || 0,
-    };
-  });
-
+  // 2) Build template
+  // 3) Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'All Tours',
-    tours: formattedTours,
+    tours,
   });
 });
 
@@ -78,6 +68,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
     tours,
   });
 });
+
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
