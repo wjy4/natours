@@ -36,16 +36,11 @@ exports.alerts = (req, res, next) => {
 //     tours,
 //   });
 // });
-exports.getOverview = catchAsync(async (req, res) => {
+exports.getOverview = catchAsync(async (req, res, next) => {
   console.log('📥 Incoming request for overview');
 
-  // const tours = await Tour.find();
-  try {
-    const tours = await Tour.find();
-    console.log('✅ Tours loaded:', tours.length);
-  } catch (err) {
-    console.log('❌ Error loading tours:', err.message);
-  }
+  const tours = await Tour.find();
+  console.log('✅ Tours loaded:', tours.length);
 
   const formattedTours = tours.map((tour) => {
     const startDate =
@@ -73,8 +68,9 @@ exports.getOverview = catchAsync(async (req, res) => {
       ratingsQuantity: tour.ratingsQuantity || 0,
       slug: tour.slug || '',
     };
-    console.log(formattedTours[0]);
   });
+
+  console.log('📦 Formatted first tour:', formattedTours[0]);
 
   res.status(200).render('overview', {
     title: 'All Tours',
