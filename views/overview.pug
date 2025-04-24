@@ -29,19 +29,23 @@ block content
                             svg.card__icon
                                 use(xlink:href='/img/icons.svg#icon-flag')
                             //- span= `${tour.locations.length} stops` 
-                            span= `${tour.locationsCount} stops`
+                            //- span= `${tour.locationsCount} stops`
+                            span= tour.locationsCount + ' stops'
                         .card__data
                             svg.card__icon
                                 use(xlink:href='/img/icons.svg#icon-user')
-                            span= `${tour.maxGroupSize} people`
+                            //- span= `${tour.maxGroupSize} people`
+                            span= tour.maxGroupSize + ' people'
 
                     .card__footer
                         p
-                            span.card__footer-value= `$${tour.price}`
+                            //- span.card__footer-value= `$${tour.price}`
+                            span.card__footer-value= '$' + tour.price
                             | 
                             span.card__footer-text per person
                         p.card__ratings
                             span.card__footer-value= tour.ratingsAverage
                             | 
-                            span.card__footer-text= `Rating (${tour.ratingsQuantity})`
+                            //- span.card__footer-text= `Rating (${tour.ratingsQuantity})`
+                            span.card__footer-text= 'Rating (' + tour.ratingsQuantity + ')'
                         a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details

@@ -14,28 +14,6 @@ exports.alerts = (req, res, next) => {
   next();
 };
 
-// exports.getOverview = catchAsync(async (req, res, next) => {
-//   // 1) Get tour data from collection
-//   const tours = await Tour.find();
-
-//   // 2) Build template
-//   // 3) Render that template using tour data from 1)
-//   res.status(200).render('overview', {
-//     title: 'All Tours',
-//     tours,
-//   });
-// });
-// exports.getOverview = catchAsync(async (req, res) => {
-//   console.log('📥 Incoming request for overview');
-//   const tours = await Tour.find();
-//   console.log('✅ Tours loaded:', tours.length);
-//   console.log('🧪 Sample tour:', tours[0]);
-
-//   res.status(200).render('overview', {
-//     title: 'All Tours',
-//     tours,
-//   });
-// });
 exports.getOverview = catchAsync(async (req, res, next) => {
   console.log('📥 Incoming request for overview');
 
