@@ -6,33 +6,39 @@ const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-exports.alerts = (req, res, next) => {
+/**
+ * Middleware: 处理 alert 通知
+ */
+const alerts = (req, res, next) => {
   const { alert } = req.query;
-  if (alert === 'booking')
+  if (alert === 'booking') {
     res.locals.alert =
-      "Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediately, please come back later.";
+      '✅ Booking successful! Check your email for confirmation.';
+  }
   next();
 };
 
-exports.getOverview = catchAsync(async (req, res, next) => {
-  // 1) Get tour data from collection
+/**
+ * Render: 首页概览页
+ */
+const getOverview = catchAsync(async (req, res) => {
   const tours = await Tour.find();
-  // 2) Render the overview page with tour data
   res.status(200).render('overview', {
     title: 'All Tours',
     tours,
   });
 });
 
-exports.getTour = catchAsync(async (req, res, next) => {
+/**
+ * Render: 具体 tour 页面
+ */
+const getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
     fields: 'review rating user',
   });
 
-  if (!tour) {
-    return next(new AppError('There is no tour with that name.', 404));
-  }
+  if (!tour) return next(new AppError('Tour not found.', 404));
 
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
@@ -40,21 +46,30 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getLoginForm = (req, res) => {
+/**
+ * Render: 登录表单
+ */
+const getLoginForm = (req, res) => {
   res.status(200).render('login', {
     title: 'Log into your account',
   });
 };
 
-exports.getAccount = (req, res) => {
+/**
+ * Render: 用户个人信息页
+ */
+const getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'Your account',
   });
 };
 
-exports.getMyTours = catchAsync(async (req, res, next) => {
+/**
+ * Render: 当前用户的所有已预订的 Tour
+ */
+const getMyTours = catchAsync(async (req, res) => {
   const bookings = await Booking.find({ user: req.user.id });
-  const tourIDs = bookings.map((el) => el.tour);
+  const tourIDs = bookings.map((b) => b.tour);
   const tours = await Tour.find({ _id: { $in: tourIDs } });
 
   res.status(200).render('overview', {
@@ -63,7 +78,10 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUserData = catchAsync(async (req, res, next) => {
+/**
+ * Handle: 更新当前用户数据
+ */
+const updateUserData = catchAsync(async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     {
@@ -79,6 +97,12 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
   });
 });
 
-console.log('[viewsController export check]', {
-  updateUserData: exports.updateUserData,
-});
+module.exports = {
+  alerts,
+  getOverview,
+  getTour,
+  getLoginForm,
+  getAccount,
+  getMyTours,
+  updateUserData,
+};
