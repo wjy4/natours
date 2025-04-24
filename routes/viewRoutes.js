@@ -1,25 +1,18 @@
-/* eslint-disable */
-
 const express = require('express');
-console.log('[DEBUG] viewController =', viewsController);
-console.log('[DEBUG] userController:', userController);
-console.log('[DEBUG] tourController:', tourController);
-
-const viewsController = require('../controllers/viewsController');
+const viewsController = require('../controllers/viewsController'); // ✅ 放在 console.log 之前
 const authController = require('../controllers/authController');
+
+console.log('[DEBUG] viewsController =', viewsController);
 
 const router = express.Router();
 
 router.use(viewsController.alerts);
 
 router.get('/', authController.isLoggedIn, viewsController.getOverview);
-
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/me', authController.protect, viewsController.getAccount);
-
 router.get('/my-tours', authController.protect, viewsController.getMyTours);
-
 router.post(
   '/submit-user-data',
   authController.protect,
