@@ -218,7 +218,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
       // ✅ User is logged in
       res.locals.user = currentUser;
     } catch (err) {
-      // console.log('[isLoggedIn] JWT verification failed ❌', err);
+      return next();
     }
   }
   return next();
