@@ -78,3 +78,7 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     user: updatedUser,
   });
 });
+
+console.log('[viewsController export check]', {
+  updateUserData: exports.updateUserData,
+});
