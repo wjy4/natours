@@ -1,6 +1,10 @@
 /* eslint-disable */
 
 const express = require('express');
+console.log('[DEBUG] viewController =', viewsController);
+console.log('[DEBUG] userController:', userController);
+console.log('[DEBUG] tourController:', tourController);
+
 const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
 
