@@ -21,7 +21,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => console.log('DB connection successful!'));
+  .then(() => console.log(`Connected to DB: ${mongoose.connection.name}`));
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
