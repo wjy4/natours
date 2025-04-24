@@ -39,8 +39,13 @@ exports.alerts = (req, res, next) => {
 exports.getOverview = catchAsync(async (req, res) => {
   console.log('📥 Incoming request for overview');
 
-  const tours = await Tour.find();
-  console.log('✅ Tours loaded:', tours.length);
+  // const tours = await Tour.find();
+  try {
+    const tours = await Tour.find();
+    console.log('✅ Tours loaded:', tours.length);
+  } catch (err) {
+    console.log('❌ Error loading tours:', err.message);
+  }
 
   const formattedTours = tours.map((tour) => {
     const startDate =
