@@ -18,10 +18,10 @@ const DB = process.env.DATABASE.replace(
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    useUnifiedTopology: true,
   })
   .then(() => console.log(`Connected to DB: ${mongoose.connection.name}`));
+console.log('DATABASE_URI:', DB);
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
