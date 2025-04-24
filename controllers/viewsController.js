@@ -4,8 +4,6 @@ const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-console.log('getOverview running...');
-
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking')
@@ -15,44 +13,14 @@ exports.alerts = (req, res, next) => {
 };
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-  console.log('📥 Incoming request for overview');
-
+  // 1) Get tour data from collection
   const tours = await Tour.find();
-  console.log('✅ Tours loaded:', tours.length);
 
-  const formattedTours = tours.map((tour) => {
-    const startDate =
-      tour.startDates && tour.startDates.length > 0
-        ? new Date(tour.startDates[0]).toLocaleString('en-uk', {
-            month: 'long',
-            year: 'numeric',
-          })
-        : 'N/A';
-
-    return {
-      imageCover: tour.imageCover || 'default.jpg',
-      name: tour.name || 'Unnamed Tour',
-      difficulty: tour.difficulty || 'medium',
-      duration: tour.duration || 0,
-      summary: tour.summary || '',
-      startLocation: {
-        description: tour.startLocation?.description || 'Unknown location',
-      },
-      startDateFormatted: startDate,
-      locationsCount: tour.locations ? tour.locations.length : 0,
-      maxGroupSize: tour.maxGroupSize || 0,
-      price: tour.price || 0,
-      ratingsAverage: tour.ratingsAverage?.toFixed(1) || '0.0',
-      ratingsQuantity: tour.ratingsQuantity || 0,
-      slug: tour.slug || '',
-    };
-  });
-
-  console.log('📦 Formatted first tour:', formattedTours[0]);
-
+  // 2) Build template
+  // 3) Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'All Tours',
-    tours: formattedTours,
+    tours,
   });
 });
 
