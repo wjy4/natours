@@ -32,6 +32,6 @@ process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);
   server.close(() => {
-    process.exit(1);
+    setTimeout(() => process.exit(1), 5000); // 5秒后强制退出
   });
 });
