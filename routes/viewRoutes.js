@@ -10,7 +10,7 @@ console.log('[DEBUG] viewsController =', viewsController);
 router.use(viewsController.alerts); // 使用 alert 中间件
 
 // 用户登录状态处理
-router.get('/', authController.isLoggedIn, viewsController.getOverview); // 首页：查看所有旅游
+router.get('/', viewsController.getOverview); // 首页：查看所有旅游
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour); // 查看单个旅游详情
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm); // 登录页
 router.get('/me', authController.protect, viewsController.getAccount); // 用户账户页面
