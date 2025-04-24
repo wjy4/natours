@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 require('./utils/checkControllerExports');
+// 加在 require('./utils/checkControllerExports'); 之后
+require('./utils/checkRouteHandlers');
 
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
