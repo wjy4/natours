@@ -23,9 +23,29 @@ const alerts = (req, res, next) => {
  */
 const getOverview = catchAsync(async (req, res) => {
   const tours = await Tour.find();
+
+  // 在后端提前处理 startDateFormatted
+  const toursWithFormattedDates = tours.map((tour) => {
+    const tourObj = tour.toObject(); // 把 Mongoose 文档转成普通 JS 对象
+
+    // 格式化第一个 startDate
+    tourObj.startDateFormatted =
+      tour.startDates && tour.startDates.length > 0
+        ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+            month: 'long',
+            year: 'numeric',
+          })
+        : 'N/A';
+
+    // 补上 locationsCount，如果需要
+    tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+    return tourObj;
+  });
+
   res.status(200).render('overview', {
     title: 'All Tours',
-    tours,
+    tours: toursWithFormattedDates,
   });
 });
 
