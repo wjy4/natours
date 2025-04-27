@@ -70,7 +70,7 @@ const createBookingCheckout = async (session) => {
 };
 
 // 处理 webhook checkout
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = async (req, res, next) => {
   const signature = req.headers['stripe-signature'];
 
   let event;
@@ -86,7 +86,7 @@ exports.webhookCheckout = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
-    createBookingCheckout(event.data.object);
+    await createBookingCheckout(event.data.object); // 👈 加 await！
   }
 
   res.status(200).json({ received: true });
