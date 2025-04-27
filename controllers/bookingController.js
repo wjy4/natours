@@ -1,6 +1,18 @@
 // controllers/bookingController.js
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+let stripe = null;
+
+try {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    console.warn('⚠️ Stripe Secret Key is missing. Using dummy key.');
+    stripe = require('stripe')('sk_test_dummy_key');
+  } else {
+    stripe = require('stripe')(key);
+  }
+} catch (err) {
+  console.error('⚠️ Stripe initialization failed:', err);
+}
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
 const AppError = require('../utils/appError');
