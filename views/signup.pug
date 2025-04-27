@@ -1,0 +1,30 @@
+extends base
+
+block content
+  main.main
+    section.section-signup
+      .signup-form
+        form.form#formSignup
+          h2.heading-secondary.mb-4 Sign up for an account
+
+          .form__group
+            label.form__label(for="name") Name
+            input.form__input(type="text", name="name", id="name", required placeholder="Your Name")
+
+          .form__group
+            label.form__label(for="email") Email address
+            input.form__input(type="email", name="email", id="email", required placeholder="you@example.com")
+
+          .form__group
+            label.form__label(for="password") Password
+            input.form__input(type="password", name="password", id="password", required minlength="8" placeholder="********")
+
+          .form__group
+            label.form__label(for="passwordConfirm") Confirm Password
+            input.form__input(type="password", name="passwordConfirm", id="passwordConfirm", required minlength="8" placeholder="********")
+
+          button.btn.btn--green(type="submit" id="signupBtn")
+            span#btnText Sign Up
+            span.spinner.hidden
+
+
