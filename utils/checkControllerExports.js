@@ -35,4 +35,5 @@ const checkControllerExports = (controllerName) => {
   'authController',
   'tourController',
   'userController',
+  'bookingController',
 ].forEach(checkControllerExports);
