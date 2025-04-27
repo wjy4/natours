@@ -70,10 +70,34 @@ const createBookingCheckout = async (session) => {
 };
 
 // 处理 webhook checkout
-exports.webhookCheckout = async (req, res, next) => {
-  const signature = req.headers['stripe-signature'];
+// exports.webhookCheckout = async (req, res, next) => {
+//   const signature = req.headers['stripe-signature'];
 
+//   let event;
+//   try {
+//     event = stripe.webhooks.constructEvent(
+//       req.body,
+//       signature,
+//       process.env.STRIPE_WEBHOOK_SECRET,
+//     );
+//   } catch (err) {
+//     console.error('⚠️ Webhook Error:', err.message);
+//     return res.status(400).send(`Webhook error: ${err.message}`);
+//   }
+
+//   if (event.type === 'checkout.session.completed') {
+//     await createBookingCheckout(event.data.object); // 👈 加 await！
+//   }
+
+//   res.status(200).json({ received: true });
+//   console.log('💥 Booking Created from Webhook!');
+// };
+exports.webhookCheckout = async (req, res, next) => {
+  console.log('📩 Webhook endpoint hit!'); // 1. 看有没有打到服务器
+
+  const signature = req.headers['stripe-signature'];
   let event;
+
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
@@ -81,16 +105,30 @@ exports.webhookCheckout = async (req, res, next) => {
       process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
-    console.error('⚠️ Webhook Error:', err.message);
+    console.error(
+      '⚠️ Stripe Webhook signature verification failed:',
+      err.message,
+    );
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
+  console.log('✅ Webhook verified!');
+  console.log('🔥 Stripe Event:', event); // 打印出整个 event body
+
   if (event.type === 'checkout.session.completed') {
-    await createBookingCheckout(event.data.object); // 👈 加 await！
+    console.log('🎯 checkout.session.completed event caught!');
+
+    try {
+      await createBookingCheckout(event.data.object);
+      console.log('✅ Booking created!');
+    } catch (error) {
+      console.error('💥 Error creating booking:', error);
+    }
+  } else {
+    console.log('⚡ Other event type received:', event.type);
   }
 
   res.status(200).json({ received: true });
-  console.log('💥 Booking Created from Webhook!');
 };
 
 // 基础 CRUD 操作
