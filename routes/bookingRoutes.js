@@ -5,17 +5,20 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-// 把 raw body 中间件先定义出来 ✅
+// 1️⃣ 提前定义好 middleware
 const rawBodyMiddleware = bodyParser.raw({ type: 'application/json' });
 
-// webhook 路由，使用 raw body 解析
+/**
+ * 注意！必须先声明中间件 function，再用！
+ * 不能在 router.post 参数里直接 bodyParser.raw(...)
+ */
 router.post(
   '/webhook-checkout',
   rawBodyMiddleware,
   bookingController.webhookCheckout,
 );
 
-// 后面的路由正常使用 jwt 鉴权
+// 正常 jwt 保护后面的路由
 router.use(authController.protect);
 
 router.get('/checkout-session/:tourId', bookingController.getCheckoutSession);
