@@ -28,7 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // 🔥 必须在 express.json() 之前处理 Stripe webhook
 app.post(
-  '/webhook-checkout',
+  '/api/v1/booking/webhook-checkout',
   bodyParser.raw({ type: 'application/json' }),
   bookingController.webhookCheckout,
 );
