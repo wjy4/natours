@@ -92,9 +92,25 @@ const getMyTours = catchAsync(async (req, res) => {
   const tourIDs = bookings.map((b) => b.tour);
   const tours = await Tour.find({ _id: { $in: tourIDs } });
 
+  const toursWithFormattedDates = tours.map((tour) => {
+    const tourObj = tour.toObject();
+
+    tourObj.startDateFormatted =
+      tour.startDates && tour.startDates.length > 0
+        ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+            month: 'long',
+            year: 'numeric',
+          })
+        : 'Coming soon';
+
+    tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+    return tourObj;
+  });
+
   res.status(200).render('overview', {
     title: 'My Tours',
-    tours,
+    tours: toursWithFormattedDates,
   });
 });
 
