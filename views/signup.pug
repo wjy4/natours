@@ -6,7 +6,7 @@ block content
       .signup-form
         form.form#formSignup
           h2.heading-secondary.mb-4 Sign up for an account
-
+          form.form.form--signup(method="POST", action="/api/v1/users/signup", enctype="multipart/form-data" id="formSignup")
           .form__group
             label.form__label(for="name") Name
             input.form__input(type="text", name="name", id="name", required placeholder="Your Name")

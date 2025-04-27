@@ -1,30 +1,22 @@
-// signup.js
-
-const showAlert = (type, msg) => {
-  const markup = `<div class="alert alert--${type}">${msg}</div>`;
-  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
-  window.setTimeout(() => {
-    const alert = document.querySelector('.alert');
-    if (alert) alert.remove();
-  }, 5000);
-};
-
-const signup = async (name, email, password, passwordConfirm) => {
+const signup = async (name, email, password, passwordConfirm, photoFile) => {
   const signupBtn = document.getElementById('signupBtn');
   try {
-    // 开启 loading
     signupBtn.textContent = 'Signing up...';
     signupBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('passwordConfirm', passwordConfirm);
+    if (photoFile) {
+      formData.append('photo', photoFile);
+    }
 
     const res = await axios({
       method: 'POST',
       url: '/api/v1/users/signup',
-      data: {
-        name,
-        email,
-        password,
-        passwordConfirm,
-      },
+      data: formData,
     });
 
     if (res.data.status === 'Success') {
@@ -36,13 +28,12 @@ const signup = async (name, email, password, passwordConfirm) => {
   } catch (err) {
     showAlert('error', err.response?.data?.message || 'Something went wrong!');
   } finally {
-    // 关闭 loading
     signupBtn.textContent = 'Sign Up';
     signupBtn.disabled = false;
   }
 };
 
-// 挂载 form 监听器
+// 监听表单
 const signupForm = document.getElementById('formSignup');
 if (signupForm) {
   signupForm.addEventListener('submit', async (e) => {
@@ -51,6 +42,8 @@ if (signupForm) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordConfirm').value;
-    await signup(name, email, password, passwordConfirm);
+    const photo = document.getElementById('photo').files[0]; // 取文件
+
+    await signup(name, email, password, passwordConfirm, photo);
   });
 }
