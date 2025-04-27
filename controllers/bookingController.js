@@ -1,4 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+// controllers/bookingController.js
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
@@ -7,7 +8,7 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId); // 注意这里 tourId 的大小写一致性
+  const tour = await Tour.findById(req.params.tourId);
 
   if (!tour) {
     return next(new AppError('No tour found with that ID', 404));
@@ -24,11 +25,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       {
         price_data: {
           currency: 'gbp',
-          unit_amount: tour.price * 100, // in pence
+          unit_amount: tour.price * 100,
           product_data: {
             name: `${tour.name} Tour`,
             description: tour.summary,
-            // images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
             images: [
               `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`,
             ],
@@ -53,8 +53,11 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   res.redirect(req.originalUrl.split('?')[0]);
 });
 
+// 这里是工厂函数封装的增删查改
 exports.getAllBookings = factory.getAll(Booking);
+exports.getBooking = factory.getOne(Booking); // 💥💥💥 补上这个！！！
 exports.createBooking = factory.createOne(Booking);
-exports.getAllBooking = factory.getAll(Booking);
 exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);
+
 exports.deleteBooking = factory.deleteOne(Booking);
