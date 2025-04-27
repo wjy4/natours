@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const bodyParser = require('body-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -16,12 +17,21 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingController = require('./controllers/bookingController'); // 👈 必须引入
 
-//Start Express App
+// Start Express App
 const app = express();
 
+// Set Pug as the template engine
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
+
+// 🔥 必须在 express.json() 之前处理 Stripe webhook
+app.post(
+  '/webhook-checkout',
+  bodyParser.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
 
 // 1) GLOBAL MIDDLEWARES
 // Serving static files
@@ -37,7 +47,7 @@ app.use(
           "'self'",
           'https://api.mapbox.com',
           'https://cdnjs.cloudflare.com',
-          'https://js.stripe.com', // ✅ 加上 Stripe
+          'https://js.stripe.com', // Stripe script
         ],
         styleSrc: [
           "'self'",
@@ -53,11 +63,11 @@ app.use(
           'http://127.0.0.1:3000',
           'https://127.0.0.1:3000',
           'http://localhost:3000',
-          'https://js.stripe.com', // ✅ 也需要 connect 权限
+          'https://js.stripe.com', // Stripe connect
         ],
         frameSrc: [
           "'self'",
-          'https://js.stripe.com', // ✅ Stripe Checkout 会用 iframe
+          'https://js.stripe.com', // Stripe Checkout iframe
         ],
         workerSrc: ["'self'", 'blob:'],
         objectSrc: ["'none'"],
@@ -72,7 +82,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Limit requests from same API
+// Limit requests from same IP
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
@@ -105,12 +115,12 @@ app.use(
   }),
 );
 
-app.use(compression()); // ✅ 正确调用中间件
+// Compression
+app.use(compression());
 
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // console.log(req.cookies);
   next();
 });
 
@@ -121,10 +131,12 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/booking', bookingRouter);
 
+// 4) Handle undefined Routes (404)
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
+// 5) Global error handling middleware
 app.use(globalErrorHandler);
 
 module.exports = app;
