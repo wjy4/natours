@@ -49,17 +49,18 @@ block content
         .form__group
           label.form__label Cover Image
           label.custom-file-upload
-              | Choose Cover Image
-              input#imageCover(type='file', name='imageCover', accept='image/*', required style="display: none;")
+            | Choose Cover Image
+            input#imageCover(type='file', name='imageCover', accept='image/*', required style="display: none;")
           img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
   
-          .form__group
+        .form__group
           label.form__label Other Images
           label.custom-file-upload
-              | Choose Other Images
-              input#images(type='file', name='images', accept='image/*', multiple style="display: none;")
+            | Choose Other Images
+            input#images(type='file', name='images', accept='image/*', multiple style="display: none;")
           .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
-
+        .form__group.right
+           button.btn.btn--green#btn-create-tour(type='button') Create Tour
 
   script(src="https://cdn.jsdelivr.net/npm/flatpickr")
 
