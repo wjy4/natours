@@ -51,13 +51,15 @@ app.use(
           "'self'",
           'https://api.mapbox.com',
           'https://cdnjs.cloudflare.com',
-          'https://js.stripe.com', // Stripe script
+          'https://js.stripe.com',
+          'https://cdn.jsdelivr.net', // 新加这个！！
         ],
         styleSrc: [
           "'self'",
           "'unsafe-inline'",
           'https://api.mapbox.com',
           'https://fonts.googleapis.com',
+          'https://cdn.jsdelivr.net', // 新加！
         ],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         connectSrc: [
@@ -67,12 +69,9 @@ app.use(
           'http://127.0.0.1:3000',
           'https://127.0.0.1:3000',
           'http://localhost:3000',
-          'https://js.stripe.com', // Stripe connect
+          'https://js.stripe.com',
         ],
-        frameSrc: [
-          "'self'",
-          'https://js.stripe.com', // Stripe Checkout iframe
-        ],
+        frameSrc: ["'self'", 'https://js.stripe.com'],
         workerSrc: ["'self'", 'blob:'],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
