@@ -1747,7 +1747,7 @@ html {
     margin-right: 0;
   }
 }
-/* --- 📱 Responsive Fix for Tour Page (Mobile) --- */
+/* --- 📱 Responsive Fix for Tour Page V2 (Including Font Size & Picture Size) --- */
 
 /* 手机屏幕最大宽度 600px */
 @media only screen and (max-width: 37.5em) {
@@ -1776,20 +1776,25 @@ html {
     padding: 5vw;
   }
 
-  /* overview-box内部元素居中显示 */
   .overview-box__group {
     margin-bottom: 4rem;
     width: 100%;
     text-align: center;
   }
 
-  /* 调整每个overview-box detail间距 */
   .overview-box__detail {
     justify-content: center;
     margin-bottom: 2rem;
   }
 
-  /* 图片块section-pictures变成纵向排列 */
+  /* Tour页 顶部标题字体变小 */
+  .heading-primary {
+    font-size: 2.5rem;
+    width: 90%;
+    margin-top: 2rem;
+  }
+
+  /* 图片块 section-pictures 调整 */
   .section-pictures {
     flex-direction: column;
     clip-path: none;
@@ -1800,6 +1805,8 @@ html {
   .picture-box__img {
     height: auto;
     padding: 0;
+    max-height: 30vh; /* 限制图片最高30%屏幕高度 */
+    object-fit: cover;
   }
 
   .picture-box__img--1,
@@ -1808,7 +1815,7 @@ html {
     padding: 0;
   }
 
-  /* 地图区域缩小高度，适配手机 */
+  /* 地图区域缩小 */
   .section-map {
     height: 40rem;
   }
@@ -1818,13 +1825,13 @@ html {
     padding: 5rem 2rem;
   }
 
-  /* 让reviews横向滚动区更自然缩放 */
+  /* 评论卡片也变窄 */
   .reviews__card {
     width: 25rem;
     padding: 3rem;
   }
 
-  /* CTA区块也缩小padding，防止超出 */
+  /* CTA区块缩小padding */
   .cta {
     padding: 5rem 3rem;
   }
@@ -1835,10 +1842,10 @@ html {
     grid-gap: 2rem;
   }
 
-  /* footer调整间距 */
+  /* footer间距调整 */
   .footer {
     padding: 3rem 2rem;
   }
 }
 
-/* --- 📱 END of Tour Page Responsive Fix --- */
+/* --- 📱 END Responsive Fix V2 --- */
