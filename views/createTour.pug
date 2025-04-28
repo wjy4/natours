@@ -1,3 +1,95 @@
+//- extends base
+
+//- block content
+//-   .section-tours
+//-     .u-center-text.u-margin-bottom-big
+//-       h2.heading-secondary Create New Tour
+
+//-     .row
+//-       form#form-create.form(method='POST', enctype='multipart/form-data')
+
+//-         .form__group
+//-           label.form__label(for='name') Name
+//-           input#name.form__input(type='text', name='name', required=true)
+
+//-         .form__group
+//-           label.form__label(for='duration') Duration (days)
+//-           input#duration.form__input(type='number', name='duration', required=true)
+
+//-         .form__group
+//-           label.form__label(for='maxGroupSize') Max Group Size
+//-           input#maxGroupSize.form__input(type='number', name='maxGroupSize', required=true)
+
+//-         .form__group
+//-           label.form__label(for='difficulty') Difficulty
+//-           select#difficulty.form__input(name='difficulty', required=true)
+//-             option(value='easy') Easy
+//-             option(value='medium') Medium
+//-             option(value='difficult') Difficult
+
+//-         .form__group
+//-           label.form__label(for='price') Price (£)
+//-           input#price.form__input(type='number', name='price', required=true)
+
+//-         .form__group
+//-           label.form__label(for='priceDiscount') Price Discount (£)
+//-           input#priceDiscount.form__input(type='number', name='priceDiscount')
+
+//-         .form__group
+//-           label.form__label(for='summary') Summary
+//-           input#summary.form__input(type='text', name='summary', required=true)
+
+//-         .form__group
+//-           label.form__label(for='description') Description
+//-           textarea#description.form__input(name='description', rows='4')
+
+
+//-         .form__group
+//-           label.form__label(for='startDates') Start Dates (comma separated)
+//-           input#startDates.form__input(type='text', name='startDates')
+
+
+//-         .form__group
+//-           label.form__label(for='startLocationDescription') Start Location Description
+//-           input#startLocationDescription.form__input(type='text', name='startLocationDescription')
+
+//-         .form__group
+//-           label.form__label(for='startLocationAddress') Start Location Address
+//-           input#startLocationAddress.form__input(type='text', name='startLocationAddress')
+
+//-         .form__group
+//-           label.form__label(for='startLocationLatitude') Start Location Latitude
+//-           input#startLocationLatitude.form__input(type='number', name='startLocationLatitude', step="any")
+
+//-         .form__group
+//-           label.form__label(for='startLocationLongitude') Start Location Longitude
+//-           input#startLocationLongitude.form__input(type='number', name='startLocationLongitude', step="any")
+//-         .form__group
+//-           label.form__label(for='secretTour') Secret Tour
+//-           select#secretTour.form__input(name='secretTour')
+//-             option(value='false') No
+//-             option(value='true') Yes
+
+//-         .form__group
+//-           label.form__label(for='imageCover') Cover Image
+//-           .custom-file-upload
+//-             label(for='imageCover') Choose Cover Image
+//-             input#imageCover(type='file', name='imageCover', accept='image/*', style='display:none;' required=true)
+//-           img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
+
+//-         .form__group
+//-           label.form__label(for='images') Other Images
+//-           .custom-file-upload
+//-             label(for='images') Choose Other Images
+//-             input#images(type='file', name='images', accept='image/*', multiple=true, data-max='3', style='display:none;')
+//-           .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
+
+//-         .form__group
+//-           label.form__label(for='guides') Guides (comma separated User IDs)
+//-           input#guides.form__input(type='text', name='guides')
+
+//-         .form__group.right
+//-           button.btn.btn--green#btn-create-tour(type='button') Create Tour
 extends base
 
 block content
@@ -7,68 +99,15 @@ block content
 
     .row
       form#form-create.form(method='POST', enctype='multipart/form-data')
+        .form__group
+          label.form__label(for='dayGap') Start Dates Gap (days)
+          input#dayGap.form__input(type='number', name='dayGap' placeholder='e.g., 30')
+        .form__group
+          button.btn.btn--blue#btn-generate-json(type='button') Generate Sample Tour JSON
 
         .form__group
-          label.form__label(for='name') Name
-          input#name.form__input(type='text', name='name', required=true)
-
-        .form__group
-          label.form__label(for='duration') Duration (days)
-          input#duration.form__input(type='number', name='duration', required=true)
-
-        .form__group
-          label.form__label(for='maxGroupSize') Max Group Size
-          input#maxGroupSize.form__input(type='number', name='maxGroupSize', required=true)
-
-        .form__group
-          label.form__label(for='difficulty') Difficulty
-          select#difficulty.form__input(name='difficulty', required=true)
-            option(value='easy') Easy
-            option(value='medium') Medium
-            option(value='difficult') Difficult
-
-        .form__group
-          label.form__label(for='price') Price (£)
-          input#price.form__input(type='number', name='price', required=true)
-
-        .form__group
-          label.form__label(for='priceDiscount') Price Discount (£)
-          input#priceDiscount.form__input(type='number', name='priceDiscount')
-
-        .form__group
-          label.form__label(for='summary') Summary
-          input#summary.form__input(type='text', name='summary', required=true)
-
-        .form__group
-          label.form__label(for='description') Description
-          textarea#description.form__input(name='description', rows='4')
-
-
-        .form__group
-          label.form__label(for='startDates') Start Dates (comma separated)
-          input#startDates.form__input(type='text', name='startDates')
-
-
-        .form__group
-          label.form__label(for='startLocationDescription') Start Location Description
-          input#startLocationDescription.form__input(type='text', name='startLocationDescription')
-
-        .form__group
-          label.form__label(for='startLocationAddress') Start Location Address
-          input#startLocationAddress.form__input(type='text', name='startLocationAddress')
-
-        .form__group
-          label.form__label(for='startLocationLatitude') Start Location Latitude
-          input#startLocationLatitude.form__input(type='number', name='startLocationLatitude', step="any")
-
-        .form__group
-          label.form__label(for='startLocationLongitude') Start Location Longitude
-          input#startLocationLongitude.form__input(type='number', name='startLocationLongitude', step="any")
-        .form__group
-          label.form__label(for='secretTour') Secret Tour
-          select#secretTour.form__input(name='secretTour')
-            option(value='false') No
-            option(value='true') Yes
+          label.form__label(for='jsonData') Paste Tour Data (without images)
+          textarea#jsonData.form__input(name='jsonData', rows='15', placeholder='Paste your Tour JSON here...')
 
         .form__group
           label.form__label(for='imageCover') Cover Image
@@ -76,17 +115,12 @@ block content
             label(for='imageCover') Choose Cover Image
             input#imageCover(type='file', name='imageCover', accept='image/*', style='display:none;' required=true)
           img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
-
         .form__group
-          label.form__label(for='images') Other Images
+          label.form__label(for='images') Other Images (select exactly 3)
           .custom-file-upload
             label(for='images') Choose Other Images
             input#images(type='file', name='images', accept='image/*', multiple=true, data-max='3', style='display:none;')
           .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
-
-        .form__group
-          label.form__label(for='guides') Guides (comma separated User IDs)
-          input#guides.form__input(type='text', name='guides')
 
         .form__group.right
           button.btn.btn--green#btn-create-tour(type='button') Create Tour
