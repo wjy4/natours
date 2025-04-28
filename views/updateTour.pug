@@ -6,7 +6,7 @@ block content
       h2.heading-secondary Edit Tour
 
     .row
-      form#form-update.form(method='POST')
+      form#form-update.form(data-id=tour._id method='POST')
         .form__group
           label.form__label(for='jsonData') Edit Tour JSON
           textarea#jsonData.form__input(name='jsonData', rows='20', placeholder='Paste your Tour JSON here...')
@@ -14,9 +14,11 @@ block content
         .form__group.right
           button.btn.btn--green#btn-update-tour(type='button') Update Tour
 
-     form#form-upload-cover(method='POST' enctype='multipart/form-data')
-       .form__group
-         label.form__label(for='imageCover') Upload New Cover Image
-         input#imageCover(type='file' name='imageCover' accept='image/*')
-       .form__group.right
-         button.btn.btn--blue#btn-upload-cover(type='button') Upload Cover
+    .row
+      form#form-upload-cover(method='POST' enctype='multipart/form-data')
+        .form__group
+          label.form__label(for='imageCover') Upload New Cover Image
+          input#imageCover(type='file' name='imageCover' accept='image/*')
+
+        .form__group.right
+          button.btn.btn--blue#btn-upload-cover(type='button') Upload Cover
