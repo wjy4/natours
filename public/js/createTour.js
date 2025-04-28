@@ -287,9 +287,10 @@ if (generateBtn && jsonTextarea) {
 
         // 把JSON字段动态追加到 FormData
         for (const key in parsedData) {
-          if (typeof parsedData[key] === 'object') {
-            // 无论是数组还是对象，统一 JSON.stringify
+          if (key === 'startLocation' || key === 'locations') {
             formData.append(key, JSON.stringify(parsedData[key]));
+          } else if (key === 'startDates' || key === 'guides') {
+            parsedData[key].forEach((item) => formData.append(key, item));
           } else {
             formData.append(key, parsedData[key]);
           }
