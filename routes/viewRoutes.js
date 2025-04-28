@@ -47,7 +47,7 @@ router.get(
   '/update-tour/:id',
   authController.protect,
   authController.restrictTo('admin', 'lead-guide'),
-  tourController.getUpdateTour,
+  viewsController.getUpdateTour,
 );
 
 module.exports = router;
