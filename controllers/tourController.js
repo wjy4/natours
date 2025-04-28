@@ -112,7 +112,63 @@ exports.aliasTopTours = (req, res, next) => {
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.createTour = factory.createOne(Tour);
-exports.updateTour = factory.updateOne(Tour);
+// exports.updateTour = factory.updateOne(Tour);
+exports.updateTour = catchAsync(async (req, res, next) => {
+  console.log('Updating Tour...');
+
+  // 1. 处理封面图 imageCover
+  if (req.files && req.files.imageCover) {
+    const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/tours/${imageCoverFilename}`);
+    req.body.imageCover = imageCoverFilename; // 更新body
+  }
+
+  // 2. 处理其他多图 images
+  if (req.files && req.files.images) {
+    req.body.images = [];
+    await Promise.all(
+      req.files.images.map(async (file, i) => {
+        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+        await sharp(file.buffer)
+          .resize(2000, 1333)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/tours/${filename}`);
+
+        req.body.images.push(filename);
+      }),
+    );
+  }
+
+  // 3. 处理普通JSON字段
+  if (typeof req.body.startLocation === 'string') {
+    req.body.startLocation = JSON.parse(req.body.startLocation);
+  }
+  if (typeof req.body.locations === 'string') {
+    req.body.locations = JSON.parse(req.body.locations);
+  }
+
+  // 4. 执行更新
+  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updatedTour) {
+    return next(new AppError('No tour found with that ID', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: updatedTour,
+    },
+  });
+});
 
 exports.deleteTour = factory.deleteOne(Tour);
 

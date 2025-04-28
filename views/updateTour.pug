@@ -13,3 +13,10 @@ block content
 
         .form__group.right
           button.btn.btn--green#btn-update-tour(type='button') Update Tour
+
+     form#form-upload-cover(method='POST' enctype='multipart/form-data')
+       .form__group
+         label.form__label(for='imageCover') Upload New Cover Image
+         input#imageCover(type='file' name='imageCover' accept='image/*')
+       .form__group.right
+         button.btn.btn--blue#btn-upload-cover(type='button') Upload Cover

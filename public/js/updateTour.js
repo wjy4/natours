@@ -1,17 +1,26 @@
 /* eslint-disable */
 document.addEventListener('DOMContentLoaded', async function () {
+  const formUpdate = document.getElementById('form-update');
   const jsonTextarea = document.getElementById('jsonData');
   const updateBtn = document.getElementById('btn-update-tour');
 
-  // 1. 获取当前Tour ID，从URL中提取
-  const tourId = window.location.pathname.split('/').pop();
+  const formUploadCover = document.getElementById('form-upload-cover');
+  const imageCoverInput = document.getElementById('imageCover');
+  const uploadCoverBtn = document.getElementById('btn-upload-cover');
 
+  const tourId = formUpdate?.getAttribute('data-id');
+
+  if (!tourId) {
+    console.error('Tour ID not found!');
+    return;
+  }
+
+  // Fetch Tour data to fill JSON
   try {
     const res = await fetch(`/api/v1/tours/${tourId}`);
     const data = await res.json();
 
     if (data.status === 'success') {
-      // 填充现有Tour数据
       jsonTextarea.value = JSON.stringify(data.data.data, null, 2);
     } else {
       console.error('Error fetching tour data');
@@ -20,29 +29,68 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.error('Fetch error', err);
   }
 
-  // 2. 点击更新按钮时
-  updateBtn.addEventListener('click', async function () {
-    const jsonData = jsonTextarea.value;
+  // Update Tour JSON button
+  if (updateBtn) {
+    updateBtn.addEventListener('click', async function () {
+      const jsonData = jsonTextarea.value;
 
-    try {
-      const parsedData = JSON.parse(jsonData); // 确保是合法JSON
-      const res = await fetch(`/api/v1/tours/${tourId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(parsedData),
-      });
+      try {
+        const parsedData = JSON.parse(jsonData);
 
-      if (res.ok) {
-        alert('Tour updated successfully!');
-        window.location.href = '/manage-tours';
-      } else {
-        alert('Error updating tour!');
+        const res = await fetch(`/api/v1/tours/${tourId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(parsedData),
+        });
+
+        if (res.ok) {
+          showAlert('success', 'Tour updated successfully!');
+          setTimeout(() => {
+            window.location.href = '/manage-tours';
+          }, 1500);
+        } else {
+          showAlert('error', 'Error updating tour!');
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert('error', 'Invalid JSON format!');
       }
-    } catch (err) {
-      console.error(err);
-      alert('Invalid JSON data!');
-    }
-  });
+    });
+  }
+
+  // Upload new cover image button
+  if (uploadCoverBtn) {
+    uploadCoverBtn.addEventListener('click', async function () {
+      const file = imageCoverInput.files[0];
+
+      if (!file) {
+        showAlert('error', 'Please select an image!');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('imageCover', file);
+
+      try {
+        const res = await fetch(`/api/v1/tours/${tourId}`, {
+          method: 'PATCH',
+          body: formData,
+        });
+
+        if (res.ok) {
+          showAlert('success', 'Cover image uploaded successfully!');
+          setTimeout(() => {
+            window.location.href = '/manage-tours';
+          }, 1500);
+        } else {
+          showAlert('error', 'Error uploading cover image!');
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert('error', 'Upload failed!');
+      }
+    });
+  }
 });
