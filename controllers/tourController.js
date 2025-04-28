@@ -7,51 +7,50 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
+// 配置 multer
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new AppError('Not an Image !! Please Upload only images', 400), false);
+    cb(new AppError('Not an Image! Please upload only images.', 400), false);
   }
 };
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
 exports.uploadTourImages = upload.fields([
-  {
-    name: 'imageCover',
-    maxCount: 1,
-  },
+  { name: 'imageCover', maxCount: 1 },
   { name: 'images', maxCount: 3 },
 ]);
 
-// upload.single('image');
-// upload.array('images', 5);
-
+// 处理上传的图片并保存
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
-  if (!req.files || (!req.files.imageCover && !req.files.images)) {
-    return next();
+  if (!req.files) return next();
+
+  const tourId = req.params.id || req.body.id;
+  if (!tourId) {
+    return next(new AppError('Missing tour ID when processing images.', 400));
   }
 
   // 处理封面图
   if (req.files.imageCover) {
-    req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    const imageCoverFilename = `tour-${tourId}-${Date.now()}-cover.jpeg`;
     await sharp(req.files.imageCover[0].buffer)
       .resize(2000, 1333)
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
-      .toFile(`public/img/tours/${req.body.imageCover}`);
+      .toFile(`public/img/tours/${imageCoverFilename}`);
+    req.body.imageCover = imageCoverFilename;
   }
 
-  // 处理多张小图
+  // 处理其他多图
   if (req.files.images) {
     req.body.images = [];
-
     await Promise.all(
       req.files.images.map(async (file, i) => {
-        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+        const filename = `tour-${tourId}-${Date.now()}-${i + 1}.jpeg`;
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
@@ -66,37 +65,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
   next();
 });
 
-// exports.resizeTourImages = catchAsync(async (req, res, next) => {
-//   if (!req.files.imageCover || !req.files.images) return next();
-
-//   // 生成一个随机唯一ID，比如时间戳
-//   const uniqueId = Date.now();
-
-//   req.body.imageCover = `tour-${uniqueId}-cover.jpeg`;
-//   await sharp(req.files.imageCover[0].buffer)
-//     .resize(2000, 1333)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toFile(`public/img/tours/${req.body.imageCover}`);
-
-//   req.body.images = [];
-
-//   await Promise.all(
-//     req.files.images.map(async (file, i) => {
-//       const filename = `tour-${uniqueId}-${i + 1}.jpeg`;
-//       await sharp(file.buffer)
-//         .resize(2000, 1333)
-//         .toFormat('jpeg')
-//         .jpeg({ quality: 90 })
-//         .toFile(`public/img/tours/${filename}`);
-
-//       req.body.images.push(filename);
-//     }),
-//   );
-
-//   next();
-// });
-
+// 解析前端传来的 startLocation 和 locations
 exports.parseTourFields = (req, res, next) => {
   try {
     if (typeof req.body.startLocation === 'string') {
@@ -113,125 +82,29 @@ exports.parseTourFields = (req, res, next) => {
     });
   }
 };
+
+// 其他基本路由逻辑
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
+
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.createTour = factory.createOne(Tour);
-// exports.updateTour = factory.updateOne(Tour);
-// exports.updateTour = catchAsync(async (req, res, next) => {
-//   console.log('Updating Tour...');
-
-//   // 1. 处理封面图 imageCover
-//   if (req.files && req.files.imageCover) {
-//     const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
-//     await sharp(req.files.imageCover[0].buffer)
-//       .resize(2000, 1333)
-//       .toFormat('jpeg')
-//       .jpeg({ quality: 90 })
-//       .toFile(`public/img/tours/${imageCoverFilename}`);
-//     req.body.imageCover = imageCoverFilename; // 更新body
-//   }
-
-//   // 2. 处理其他多图 images
-//   if (req.files && req.files.images) {
-//     req.body.images = [];
-//     await Promise.all(
-//       req.files.images.map(async (file, i) => {
-//         const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-//         await sharp(file.buffer)
-//           .resize(2000, 1333)
-//           .toFormat('jpeg')
-//           .jpeg({ quality: 90 })
-//           .toFile(`public/img/tours/${filename}`);
-
-//         req.body.images.push(filename);
-//       }),
-//     );
-//   }
-
-//   // 3. 处理普通JSON字段
-//   if (typeof req.body.startLocation === 'string') {
-//     req.body.startLocation = JSON.parse(req.body.startLocation);
-//   }
-//   if (typeof req.body.locations === 'string') {
-//     req.body.locations = JSON.parse(req.body.locations);
-//   }
-
-//   // 4. 执行更新
-//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-
-//   if (!updatedTour) {
-//     return next(new AppError('No tour found with that ID', 404));
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       data: updatedTour,
-//     },
-//   });
-// });
 
 exports.updateTour = catchAsync(async (req, res, next) => {
   console.log('Request body:', req.body);
 
-  console.log('Updating Tour...');
-
-  // 1. 如果有文件上传才处理图片
-  if (req.files && (req.files.imageCover || req.files.images)) {
-    // 处理封面图 imageCover
-    if (req.files.imageCover) {
-      const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
-      await sharp(req.files.imageCover[0].buffer)
-        .resize(2000, 1333)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/tours/${imageCoverFilename}`);
-      req.body.imageCover = imageCoverFilename; // 更新body
-    }
-
-    // 处理其他多图 images
-    if (req.files.images) {
-      req.body.images = [];
-      await Promise.all(
-        req.files.images.map(async (file, i) => {
-          const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-          await sharp(file.buffer)
-            .resize(2000, 1333)
-            .toFormat('jpeg')
-            .jpeg({ quality: 90 })
-            .toFile(`public/img/tours/${filename}`);
-
-          req.body.images.push(filename);
-        }),
-      );
-    }
-  }
-
-  // 2. 解析 JSON 可能带有的 startLocation, locations
-  if (typeof req.body.startLocation === 'string') {
-    req.body.startLocation = JSON.parse(req.body.startLocation);
-  }
-  if (typeof req.body.locations === 'string') {
-    req.body.locations = JSON.parse(req.body.locations);
-  }
-
-  // 3. 执行数据库更新
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
 
   if (!updatedTour) {
-    return next(new AppError('No tour found with that ID', 404));
+    return next(new AppError('No tour found with that ID.', 404));
   }
 
   res.status(200).json({
@@ -258,25 +131,20 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
         maxPrice: { $max: '$price' },
       },
     },
-    {
-      $sort: { avgPrice: 1 },
-    },
+    { $sort: { avgPrice: 1 } },
   ]);
+
   res.status(200).json({
-    Status: 'Success',
-    data: {
-      stats,
-    },
+    status: 'success',
+    data: { stats },
   });
 });
 
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
-  const year = req.params.year * 1; // 2021
+  const year = req.params.year * 1;
 
   const plan = await Tour.aggregate([
-    {
-      $unwind: '$startDates',
-    },
+    { $unwind: '$startDates' },
     {
       $match: {
         startDates: {
@@ -292,33 +160,18 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
         tours: { $push: '$name' },
       },
     },
-    {
-      $addFields: { month: '$_id' },
-    },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
-    {
-      $sort: { numTourStarts: -1 },
-    },
-    {
-      $limit: 12,
-    },
+    { $addFields: { month: '$_id' } },
+    { $project: { _id: 0 } },
+    { $sort: { numTourStarts: -1 } },
+    { $limit: 12 },
   ]);
 
   res.status(200).json({
-    Status: 'Success',
+    status: 'success',
     results: plan.length,
-    data: {
-      plan,
-    },
+    data: { plan },
   });
 });
-
-//  '/tours-within/:distance/center/:latlng/unit/:unit',
-// /tours-distance/233/center/34.111745,-118.113491/unit/mi
 
 exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
@@ -327,23 +180,24 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
 
   if (!lat || !lng) {
-    next(
+    return next(
       new AppError(
-        'Please provide latiturt and longtitude in the format lat, lng.',
+        'Please provide latitude and longitude in format lat,lng.',
         400,
       ),
     );
   }
 
   const tours = await Tour.find({
-    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+    startLocation: {
+      $geoWithin: { $centerSphere: [[lng * 1, lat * 1], radius] },
+    },
   });
+
   res.status(200).json({
     status: 'success',
     results: tours.length,
-    data: {
-      data: tours,
-    },
+    data: { data: tours },
   });
 });
 
@@ -352,10 +206,11 @@ exports.getDistances = catchAsync(async (req, res, next) => {
   const [lat, lng] = latlng.split(',');
 
   const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
   if (!lat || !lng) {
-    next(
+    return next(
       new AppError(
-        'Please provide latiturt and longtitude in the format lat, lng.',
+        'Please provide latitude and longitude in format lat,lng.',
         400,
       ),
     );
@@ -382,8 +237,6 @@ exports.getDistances = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: {
-      data: distances,
-    },
+    data: { data: distances },
   });
 });

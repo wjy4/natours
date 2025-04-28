@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       const formData = new FormData();
       formData.append('imageCover', file);
+      formData.append('id', tourId);
 
       try {
         const res = await fetch(`/api/v1/tours/${tourId}`, {
