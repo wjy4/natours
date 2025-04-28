@@ -43,11 +43,11 @@ router.post(
   tourController.resizeTourImages,
   tourController.createTour,
 );
-router.get(
-  '/update-tour/:id',
-  authController.protect,
-  authController.restrictTo('admin', 'lead-guide'),
-  tourController.getUpdateTour,
-);
+// router.get(
+//   '/update-tour/:id',
+//   authController.protect,
+//   authController.restrictTo('admin', 'lead-guide'),
+//   tourController.getUpdateTour,
+// );
 
 module.exports = router;
