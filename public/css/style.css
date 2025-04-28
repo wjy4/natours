@@ -1729,3 +1729,116 @@ html {
 .nav__el:hover {
   border-bottom: 2px solid currentColor;
 }
+
+@media only screen and (max-width: 37.5em) {
+  .section-description {
+    flex-direction: column;
+  }
+
+  .section-description > * {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 5vw;
+    padding-top: 10vw;
+    padding-bottom: 5vw;
+  }
+
+  .description-box .description {
+    margin-right: 0;
+  }
+}
+/* --- 📱 Responsive Fix for Tour Page (Mobile) --- */
+
+/* 手机屏幕最大宽度 600px */
+@media only screen and (max-width: 37.5em) {
+  /* section-description 调整为单列堆叠布局 */
+  .section-description {
+    flex-direction: column;
+  }
+
+  .section-description > * {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 5vw;
+    padding-top: 10vw;
+    padding-bottom: 5vw;
+  }
+
+  /* description内部右边距移除，防止撑爆 */
+  .description-box .description {
+    margin-right: 0;
+  }
+
+  /* overview-box整体堆叠 */
+  .overview-box {
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw;
+  }
+
+  /* overview-box内部元素居中显示 */
+  .overview-box__group {
+    margin-bottom: 4rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* 调整每个overview-box detail间距 */
+  .overview-box__detail {
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  /* 图片块section-pictures变成纵向排列 */
+  .section-pictures {
+    flex-direction: column;
+    clip-path: none;
+    -webkit-clip-path: none;
+    margin-top: 0;
+  }
+
+  .picture-box__img {
+    height: auto;
+    padding: 0;
+  }
+
+  .picture-box__img--1,
+  .picture-box__img--2,
+  .picture-box__img--3 {
+    padding: 0;
+  }
+
+  /* 地图区域缩小高度，适配手机 */
+  .section-map {
+    height: 40rem;
+  }
+
+  /* review区块 padding 缩小 */
+  .section-reviews {
+    padding: 5rem 2rem;
+  }
+
+  /* 让reviews横向滚动区更自然缩放 */
+  .reviews__card {
+    width: 25rem;
+    padding: 3rem;
+  }
+
+  /* CTA区块也缩小padding，防止超出 */
+  .cta {
+    padding: 5rem 3rem;
+  }
+
+  .cta__content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    grid-gap: 2rem;
+  }
+
+  /* footer调整间距 */
+  .footer {
+    padding: 3rem 2rem;
+  }
+}
+
+/* --- 📱 END of Tour Page Responsive Fix --- */
