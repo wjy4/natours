@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           showAlert('error', 'Error uploading cover image!');
         }
       } catch (err) {
-        console.error(err);
+        console.error('Update failed:', errorText);
         showAlert('error', 'Upload failed!');
       }
     });
