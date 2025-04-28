@@ -4,17 +4,26 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-router.post('/signup', authController.signup);
+// ✅ signup - 这里使用 userController 的 uploadUserPhoto 和 resizeUserPhoto 中间件
+router.post(
+  '/signup',
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
+  authController.signup,
+);
+
+// ✅ login/logout
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
-// forgot password 和 reset password
+// ✅ Forgot password and Reset password
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-// 下面这些都需要登录后才能访问
+// ✅ protect middleware after this line
 router.use(authController.protect);
 
+// ✅ user self routes
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, userController.getUser);
 router.patch(
@@ -25,7 +34,7 @@ router.patch(
 );
 router.delete('/deleteMe', userController.deleteMe);
 
-// Admin 角色专属
+// ✅ admin-only
 router.use(authController.restrictTo('admin'));
 
 router

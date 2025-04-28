@@ -1,8 +1,11 @@
 const signup = async (name, email, password, passwordConfirm, photoFile) => {
   const signupBtn = document.getElementById('signupBtn');
+  const btnText = document.getElementById('btnText');
+  const spinner = document.querySelector('.spinner');
+
   try {
-    signupBtn.querySelector('#btnText').textContent = 'Signing up...';
-    signupBtn.querySelector('.spinner').classList.remove('hidden');
+    btnText.textContent = 'Signing up...';
+    spinner.classList.remove('hidden');
     signupBtn.disabled = true;
 
     const formData = new FormData();
@@ -10,9 +13,7 @@ const signup = async (name, email, password, passwordConfirm, photoFile) => {
     formData.append('email', email);
     formData.append('password', password);
     formData.append('passwordConfirm', passwordConfirm);
-    if (photoFile) {
-      formData.append('photo', photoFile);
-    }
+    if (photoFile) formData.append('photo', photoFile);
 
     const res = await axios({
       method: 'POST',
@@ -29,12 +30,13 @@ const signup = async (name, email, password, passwordConfirm, photoFile) => {
   } catch (err) {
     showAlert('error', err.response?.data?.message || 'Something went wrong!');
   } finally {
-    signupBtn.querySelector('#btnText').textContent = 'Sign Up';
-    signupBtn.querySelector('.spinner').classList.add('hidden');
+    btnText.textContent = 'Sign Up';
+    spinner.classList.add('hidden');
     signupBtn.disabled = false;
   }
 };
 
+// 监听表单提交
 const signupForm = document.getElementById('formSignup');
 if (signupForm) {
   signupForm.addEventListener('submit', async (e) => {
