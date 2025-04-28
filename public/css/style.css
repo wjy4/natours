@@ -1384,3 +1384,24 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.no-bookings-message {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.no-bookings-message p {
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.no-bookings-message .button {
+  margin-top: 2rem;
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #55c57a;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}

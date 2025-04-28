@@ -89,28 +89,61 @@ const getAccount = (req, res) => {
  */
 const getMyTours = catchAsync(async (req, res) => {
   const bookings = await Booking.find({ user: req.user.id });
-  const tourIDs = bookings.map((b) => b.tour);
-  const tours = await Tour.find({ _id: { $in: tourIDs } });
 
-  const toursWithFormattedDates = tours.map((tour) => {
-    const tourObj = tour.toObject();
+  let tours = [];
+  let noBookings = false;
 
-    tourObj.startDateFormatted =
-      tour.startDates && tour.startDates.length > 0
-        ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
-            month: 'long',
-            year: 'numeric',
-          })
-        : 'Coming soon';
+  if (bookings.length === 0) {
+    noBookings = true;
 
-    tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+    // 如果没有 bookings, 给他推荐 top 5 tours
+    tours = await Tour.find()
+      .sort('-ratingsAverage price')
+      .limit(5)
+      .select(
+        'name price ratingsAverage summary difficulty imageCover slug startDates locations maxGroupSize ratingsQuantity',
+      );
 
-    return tourObj;
-  });
+    tours = tours.map((tour) => {
+      const tourObj = tour.toObject();
+
+      tourObj.startDateFormatted =
+        tour.startDates && tour.startDates.length > 0
+          ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+              month: 'long',
+              year: 'numeric',
+            })
+          : 'Coming soon';
+
+      tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+      return tourObj;
+    });
+  } else {
+    const tourIDs = bookings.map((b) => b.tour);
+    const bookedTours = await Tour.find({ _id: { $in: tourIDs } });
+
+    tours = bookedTours.map((tour) => {
+      const tourObj = tour.toObject();
+
+      tourObj.startDateFormatted =
+        tour.startDates && tour.startDates.length > 0
+          ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+              month: 'long',
+              year: 'numeric',
+            })
+          : 'Coming soon';
+
+      tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+      return tourObj;
+    });
+  }
 
   res.status(200).render('overview', {
-    title: 'My Tours',
-    tours: toursWithFormattedDates,
+    title: noBookings ? 'Recommended Tours' : 'My Tours',
+    tours,
+    noBookings,
   });
 });
 
