@@ -1,8 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const nodemailer = require('nodemailer');
 const pug = require('pug');
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { htmlToText } = require('html-to-text');
+const resolvePath = require('./resolvePath');
+// 注意根据你存放 resolvePath.js 的具体位置来调整引入路径
 
 // new Email (user, url).sendWelcome()
 module.exports = class Email {
@@ -35,7 +38,7 @@ module.exports = class Email {
   }
 
   async send(template, subject) {
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+    const html = pug.renderFile(resolvePath(`views/email/${template}.pug`), {
       firstName: this.firstName,
       url: this.url,
       subject,
