@@ -187,6 +187,7 @@ const getManageTours = async (req, res, next) => {
 const getCreateTour = (req, res) => {
   res.status(200).render('createTour', {
     title: 'Create New Tour',
+    user: res.locals.user || null,
   });
 };
 
