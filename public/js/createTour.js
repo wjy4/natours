@@ -287,9 +287,8 @@ if (generateBtn && jsonTextarea) {
 
         // 把JSON字段动态追加到 FormData
         for (const key in parsedData) {
-          if (Array.isArray(parsedData[key])) {
-            parsedData[key].forEach((item) => formData.append(key, item));
-          } else if (typeof parsedData[key] === 'object') {
+          if (typeof parsedData[key] === 'object') {
+            // 无论是数组还是对象，统一 JSON.stringify
             formData.append(key, JSON.stringify(parsedData[key]));
           } else {
             formData.append(key, parsedData[key]);
