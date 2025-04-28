@@ -25,7 +25,7 @@ block content
                         .card__data
                             svg.card__icon
                                 use(xlink:href='/img/icons.svg#icon-map-pin')
-                            span= tour.startLocation.description
+                            span= tour.startLocation ? tour.startLocation.description : 'Location TBC'
                         .card__data
                             svg.card__icon
                                 use(xlink:href='/img/icons.svg#icon-calendar')
