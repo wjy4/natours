@@ -1,0 +1,44 @@
+extends base
+
+block content
+  .section-tours
+    .u-center-text.u-margin-bottom-big
+      h2.heading-secondary
+        | Manage All Tours
+
+    .u-center-text.u-margin-bottom-big
+      a.btn.btn--green(href='/create-tour') + Create New Tour
+
+    .row
+      each tour in tours
+        .col-1-of-3
+          .card
+            .card__header
+              img.card__picture.card__picture--1(src=`/img/tours/${tour.imageCover}` alt="Tour")
+              h3.heading-tertiary.u-margin-bottom-small #{tour.name}
+            .card__details
+              ul
+                li Duration: #{tour.duration} days
+                li Price: $#{tour.price}
+            .card__footer
+              a.btn.btn--green(href=`/update-tour/${tour._id}`) Edit
+              button.btn.btn--red(data-id=`${tour._id}` onclick="deleteTour(this)") Delete
+
+script.
+  async function deleteTour(btn) {
+    const id = btn.getAttribute('data-id');
+    try {
+      const res = await fetch(`/api/v1/tours/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.status === 204) {
+        alert('Tour deleted successfully!');
+        location.reload();
+      } else {
+        alert('Error deleting tour!');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting tour!');
+    }
+  }

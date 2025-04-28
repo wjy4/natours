@@ -19,7 +19,7 @@ block content
                     .admin-nav
                         h5.admin-nav__heading Admin
                         ul.side-nav
-                            +navItem('#', 'Manage tours','map',true)
+                            +navItem('/manage-tours', 'Manage tours','map',user.role === 'admin' || user.role === 'lead-guide')
                             +navItem('#', 'Manage users','users',true)
                             +navItem('#', 'Manage reviews','star',true)
                             +navItem('#', 'Manage bookings','briefcase',true)

@@ -1,0 +1,117 @@
+extends base
+
+block content
+  .section-tours
+    .u-center-text.u-margin-bottom-big
+      h2.heading-secondary
+        | Create New Tour
+
+    // Progress bar
+    .row
+      .progress-container(style="display:none")
+        .progress-bar(style="width: 0%; height: 5px; background-color: green;")
+
+    .row
+      form.form(method='POST', enctype='multipart/form-data')
+        .form__group
+          label.form__label(for='name') Name
+          input#name.form__input(type='text', name='name', required)
+
+        .form__group
+          label.form__label(for='duration') Duration (days)
+          input#duration.form__input(type='number', name='duration', required)
+
+        .form__group
+          label.form__label(for='maxGroupSize') Max Group Size
+          input#maxGroupSize.form__input(type='number', name='maxGroupSize', required)
+
+        .form__group
+          label.form__label(for='difficulty') Difficulty
+          select#difficulty.form__input(name='difficulty', required)
+            option(value='easy') Easy
+            option(value='medium') Medium
+            option(value='difficult') Difficult
+
+        .form__group
+          label.form__label(for='price') Price ($)
+          input#price.form__input(type='number', name='price', required)
+
+        .form__group
+          label.form__label(for='priceDiscount') Price Discount ($)
+          input#priceDiscount.form__input(type='number', name='priceDiscount')
+
+        .form__group
+          label.form__label(for='summary') Summary
+          input#summary.form__input(type='text', name='summary', required)
+
+        .form__group
+          label.form__label(for='description') Description
+          textarea#description.form__input(name='description', rows='4')
+
+        .form__group
+          label.form__label(for='startDates') Start Dates (comma-separated yyyy-mm-dd)
+          input#startDates.form__input(type='text', name='startDates')
+
+        .form__group
+          label.form__label(for='imageCover') Cover Image
+          input#imageCover.form__upload(type='file', accept='image/*', name='imageCover', required)
+
+        .form__group
+          label.form__label(for='images') Other Images
+          input#images.form__upload(type='file', accept='image/*', multiple, name='images')
+
+        .form__group.right
+          button.btn.btn--green#btn-create-tour(type='submit') Create Tour
+
+// 上传处理脚本
+script.
+  const form = document.querySelector('.form');
+  const progressContainer = document.querySelector('.progress-container');
+  const progressBar = document.querySelector('.progress-bar');
+  const btn = document.getElementById('btn-create-tour');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    btn.textContent = 'Uploading...';
+
+    const formData = new FormData(form);
+
+    // 手动处理 startDates 字段 (转成数组)
+    const startDatesInput = form.querySelector('#startDates').value;
+    if (startDatesInput) {
+      startDatesInput.split(',').forEach(date => {
+        formData.append('startDates', new Date(date.trim()));
+      });
+    }
+
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/submit-tour-data');
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          const percent = (e.loaded / e.total) * 100;
+          progressContainer.style.display = 'block';
+          progressBar.style.width = `${percent}%`;
+        }
+      };
+
+      xhr.onload = function () {
+        if (xhr.status === 201 || xhr.status === 200) {
+          alert('Tour created successfully!');
+          window.location.href = '/manage-tours';
+        } else {
+          alert('Something went wrong!');
+        }
+      };
+
+      xhr.onerror = function () {
+        alert('Upload failed!');
+      };
+
+      xhr.send(formData);
+    } catch (err) {
+      console.error(err);
+      alert('Error uploading!');
+    }
+  });

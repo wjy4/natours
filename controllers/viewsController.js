@@ -172,6 +172,24 @@ const getSignupForm = (req, res) => {
   });
 };
 
+const getManageTours = async (req, res, next) => {
+  try {
+    const tours = await Tour.find();
+    res.status(200).render('manageTours', {
+      title: 'Manage Tours',
+      tours,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getCreateTour = (req, res) => {
+  res.status(200).render('createTour', {
+    title: 'Create New Tour',
+  });
+};
+
 module.exports = {
   alerts,
   getOverview,
@@ -181,4 +199,6 @@ module.exports = {
   getMyTours,
   updateUserData,
   getSignupForm,
+  getManageTours,
+  getCreateTour,
 };

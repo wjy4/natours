@@ -2,6 +2,7 @@
 const express = require('express');
 const authController = require('../controllers/authController');
 const viewsController = require('../controllers/viewsController'); // 确保路径正确
+const tourController = require('../controllers/tourController');
 
 const router = express.Router();
 
@@ -20,6 +21,27 @@ router.post(
   '/submit-user-data',
   authController.protect,
   viewsController.updateUserData,
+);
+
+router.get(
+  '/manage-tours',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  viewsController.getManageTours,
+);
+router.get(
+  '/create-tour',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  viewsController.getCreateTour,
+);
+router.post(
+  '/submit-tour-data',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  tourController.uploadTourImages,
+  tourController.resizeTourImages,
+  tourController.createTour,
 );
 
 module.exports = router;

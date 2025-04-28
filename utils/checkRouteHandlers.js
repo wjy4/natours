@@ -34,7 +34,7 @@ const checkRouteHandlers = () => {
     }
 
     const handlerPattern =
-      /(?:router\.(?:get|post|patch|put|delete))\([^,]+,\s*([^)]+)\)/g;
+      /(?:router\.(?:get|post|patch|put|delete))\([^,]+,\s*([\s\S]+?)\)/g;
     while ((match = handlerPattern.exec(content)) !== null) {
       const handlerGroup = match[1];
       const handlerNames = handlerGroup
@@ -43,7 +43,11 @@ const checkRouteHandlers = () => {
         .filter((h) => h.includes('.'));
 
       handlerNames.forEach((h) => {
-        const [controllerName, funcName] = h.split('.');
+        // 提取 controller 和 function 部分（忽略参数）
+        const match = h.match(/(\w+)\.(\w+)(?:\([^)]*\))?/);
+        if (!match) return;
+
+        const [_, controllerName, funcName] = match;
         const controller = requires[controllerName];
 
         if (!controller || !isValidHandler(controller[funcName])) {
