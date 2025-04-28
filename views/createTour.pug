@@ -46,14 +46,25 @@ block content
           label.form__label(for='startDates') Start Dates
           input#startDates.form__input(type='text', name='startDates')
 
+        // Cover image upload + preview
         .form__group
           label.form__label(for='imageCover') Cover Image
           input#imageCover.form__upload(type='file', accept='image/*', name='imageCover', required)
+          img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
 
+        // Other images upload + preview
         .form__group
           label.form__label(for='images') Other Images
           input#images.form__upload(type='file', accept='image/*', multiple, name='images')
+          .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
 
         .form__group.right
           button.btn.btn--green#btn-create-tour(type='button') Create Tour
 
+  script((src = 'https://cdn.jsdelivr.net/npm/flatpickr'));
+  
+  script.flatpickr('#startDates', {
+    mode: 'multiple',
+    dateFormat: 'Y-m-d',
+  });
+  

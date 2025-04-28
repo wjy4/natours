@@ -1,8 +1,43 @@
-window.addEventListener('DOMContentLoaded', function () {
-  console.log('[createTour.js] DOM fully loaded');
-
+// 👇 上传处理和图片预览逻辑
+script.window.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('form-create');
   const btn = document.getElementById('btn-create-tour');
+  const coverInput = document.getElementById('imageCover');
+  const imagesInput = document.getElementById('images');
+  const previewCover = document.getElementById('preview-cover');
+  const previewImages = document.querySelector('.preview-images');
+
+  if (coverInput) {
+    coverInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          previewCover.src = event.target.result;
+          previewCover.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (imagesInput) {
+    imagesInput.addEventListener('change', function (e) {
+      previewImages.innerHTML = ''; // 清空之前的预览
+      Array.from(e.target.files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.style.width = '100px';
+          img.style.height = '100px';
+          img.style.objectFit = 'cover';
+          previewImages.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
 
   if (form && btn) {
     btn.addEventListener('click', async function (e) {
@@ -46,7 +81,5 @@ window.addEventListener('DOMContentLoaded', function () {
         showAlert('error', 'Error uploading!');
       }
     });
-  } else {
-    console.error('[createTour.js] Form or button not found!');
   }
 });
