@@ -5,94 +5,97 @@ flatpickr('#startDates', {
   dateFormat: 'Y-m-d',
 });
 
-const form = document.getElementById('form-create');
-const btn = document.getElementById('btn-create-tour');
-const coverInput = document.getElementById('imageCover');
-const imagesInput = document.getElementById('images');
-const previewCover = document.getElementById('preview-cover');
-const previewImages = document.querySelector('.preview-images');
+(function () {
+  const form = document.getElementById('form-create');
+  const btn = document.getElementById('btn-create-tour');
+  const coverInput = document.getElementById('imageCover');
+  const imagesInput = document.getElementById('images');
+  const previewCover = document.getElementById('preview-cover');
+  const previewImages = document.querySelector('.preview-images');
 
-window.addEventListener('DOMContentLoaded', function () {
-  if (coverInput) {
-    coverInput.addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          previewCover.src = event.target.result;
-          previewCover.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  if (imagesInput) {
-    imagesInput.addEventListener('change', function (e) {
-      previewImages.innerHTML = '';
-      Array.from(e.target.files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.style.width = '100px';
-          img.style.height = '100px';
-          img.style.objectFit = 'cover';
-          previewImages.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (coverInput) {
+      coverInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            previewCover.src = event.target.result;
+            previewCover.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
       });
-    });
-  }
+    }
 
-  if (form && btn) {
-    btn.addEventListener('click', async function (e) {
-      e.preventDefault();
-      btn.textContent = 'Creating...';
-
-      const formData = new FormData(form);
-
-      const startDatesInput = document.getElementById('startDates').value;
-      if (startDatesInput) {
-        formData.delete('startDates');
-        startDatesInput.split(',').forEach((date) => {
-          formData.append('startDates', new Date(date.trim()));
+    if (imagesInput) {
+      imagesInput.addEventListener('change', function (e) {
+        previewImages.innerHTML = '';
+        Array.from(e.target.files).forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            previewImages.appendChild(img);
+          };
+          reader.readAsDataURL(file);
         });
-      }
+      });
+    }
 
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/submit-tour-data');
+    if (form && btn) {
+      btn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        btn.textContent = 'Creating...';
 
-        xhr.onload = function () {
-          if (xhr.status === 201 || xhr.status === 200) {
-            showAlert('success', 'Tour created successfully!');
-            setTimeout(() => {
-              window.location.href = '/manage-tours';
-            }, 1500);
-          } else {
-            console.error(xhr.responseText);
-            showAlert('error', 'Something went wrong!');
-          }
-        };
+        const formData = new FormData(form);
 
-        xhr.onerror = function () {
-          console.error('XHR upload failed');
-          showAlert('error', 'Upload failed!');
-        };
+        const startDatesInput = document.getElementById('startDates').value;
+        if (startDatesInput) {
+          formData.delete('startDates');
+          startDatesInput.split(',').forEach((date) => {
+            formData.append('startDates', new Date(date.trim()));
+          });
+        }
 
-        xhr.send(formData);
-      } catch (err) {
-        console.error(err);
-        showAlert('error', 'Error uploading!');
-      }
-    });
-  }
-});
-// 自动绑定自定义上传按钮
-document.querySelectorAll('.custom-file-upload').forEach((label) => {
-  const input = label.querySelector('input');
-  label.addEventListener('click', () => {
-    input.click();
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/submit-tour-data');
+
+          xhr.onload = function () {
+            if (xhr.status === 201 || xhr.status === 200) {
+              showAlert('success', 'Tour created successfully!');
+              setTimeout(() => {
+                window.location.href = '/manage-tours';
+              }, 1500);
+            } else {
+              console.error(xhr.responseText);
+              showAlert('error', 'Something went wrong!');
+            }
+          };
+
+          xhr.onerror = function () {
+            console.error('XHR upload failed');
+            showAlert('error', 'Upload failed!');
+          };
+
+          xhr.send(formData);
+        } catch (err) {
+          console.error(err);
+          showAlert('error', 'Error uploading!');
+        }
+      });
+    }
   });
-});
+
+  // 自动绑定自定义上传按钮
+  document.querySelectorAll('.custom-file-upload').forEach((label) => {
+    const input = label.querySelector('input');
+    label.addEventListener('click', () => {
+      input.click();
+    });
+  });
+})();
