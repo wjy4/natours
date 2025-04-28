@@ -76,19 +76,19 @@ block content
         /* --- 封面图片 Cover Image --- */
         /* --- 封面图片 Cover Image --- */
         .form__group
-        label.form__label(for='imageCover') Cover Image
-        .custom-file-upload
+          label.form__label(for='imageCover') Cover Image
+          .custom-file-upload
             label(for='imageCover') Choose Cover Image
             input#imageCover(type='file', name='imageCover', accept='image/*', style='display:none;' required=true)
-        img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
+          img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
 
         /* --- 其他图片 Other Images --- */
         .form__group
-        label.form__label(for='images') Other Images
-        .custom-file-upload
+          label.form__label(for='images') Other Images
+          .custom-file-upload
             label(for='images') Choose Other Images
             input#images(type='file', name='images', accept='image/*', multiple=true, data-max='3', style='display:none;')
-        .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
+          .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
 
 
         /* --- 指定Guides --- */
