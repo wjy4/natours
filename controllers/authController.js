@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
@@ -55,6 +56,7 @@ const createSendToken = (user, statusCode, res) => {
 //     },
 //   });
 // });
+
 exports.signup = catchAsync(async (req, res, next) => {
   let userData = {
     name: req.body.name,

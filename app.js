@@ -10,6 +10,10 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 
+const session = require('express-session');
+const passport = require('passport');
+require('./utils/passport'); // 导入刚刚写好的 passport 配置
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
@@ -94,6 +98,17 @@ app.use('/api', limiter);
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());

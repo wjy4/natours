@@ -2,24 +2,17 @@ const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
-console.log('[DEBUG] userController:', userController);
-
 const router = express.Router();
 
-router.post(
-  '/signup',
-  userController.uploadUserPhoto,
-  userController.resizeUserPhoto,
-  authController.signup,
-);
-
+router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
+// forgot password 和 reset password
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-// Protect all routes after this middleware
+// 下面这些都需要登录后才能访问
 router.use(authController.protect);
 
 router.patch('/updateMyPassword', authController.updatePassword);
@@ -32,6 +25,7 @@ router.patch(
 );
 router.delete('/deleteMe', userController.deleteMe);
 
+// Admin 角色专属
 router.use(authController.restrictTo('admin'));
 
 router

@@ -1,7 +1,8 @@
 const signup = async (name, email, password, passwordConfirm, photoFile) => {
   const signupBtn = document.getElementById('signupBtn');
   try {
-    signupBtn.textContent = 'Signing up...';
+    signupBtn.querySelector('#btnText').textContent = 'Signing up...';
+    signupBtn.querySelector('.spinner').classList.remove('hidden');
     signupBtn.disabled = true;
 
     const formData = new FormData();
@@ -28,12 +29,12 @@ const signup = async (name, email, password, passwordConfirm, photoFile) => {
   } catch (err) {
     showAlert('error', err.response?.data?.message || 'Something went wrong!');
   } finally {
-    signupBtn.textContent = 'Sign Up';
+    signupBtn.querySelector('#btnText').textContent = 'Sign Up';
+    signupBtn.querySelector('.spinner').classList.add('hidden');
     signupBtn.disabled = false;
   }
 };
 
-// 监听表单
 const signupForm = document.getElementById('formSignup');
 if (signupForm) {
   signupForm.addEventListener('submit', async (e) => {
@@ -42,7 +43,7 @@ if (signupForm) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordConfirm').value;
-    const photo = document.getElementById('photo').files[0]; // 取文件
+    const photo = document.getElementById('photo')?.files[0];
 
     await signup(name, email, password, passwordConfirm, photo);
   });

@@ -133,6 +133,12 @@ const updateUserData = catchAsync(async (req, res) => {
   });
 });
 
+const getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Sign up for an account',
+  });
+};
+
 module.exports = {
   alerts,
   getOverview,
@@ -141,4 +147,5 @@ module.exports = {
   getAccount,
   getMyTours,
   updateUserData,
+  getSignupForm,
 };

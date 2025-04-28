@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 脚本名称: deploy-heroku.sh
-# 作用: 自动检查controllers并部署到Heroku
+# 作用: 自动检查 controllers、passport strategies 并部署到 Heroku
 export $(cat config.env | xargs)
 
 echo "🚀 Running Controller Checks..."
@@ -17,6 +17,12 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "✅ Controller export check passed."
+
+
+# 检查 Passport strategies
+
+
+
 
 echo "🚀 Adding files to Git..."
 
