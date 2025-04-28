@@ -150,10 +150,44 @@ exports.createTour = factory.createOne(Tour);
 //     },
 //   });
 // });
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//   console.log('Incoming Request body:', req.body);
+
+//   // 处理 guides 字段，把对象转成 ObjectId
+//   if (req.body.guides && Array.isArray(req.body.guides)) {
+//     req.body.guides = req.body.guides
+//       .map((guide) => {
+//         if (typeof guide === 'object' && guide._id) {
+//           return guide._id; // 如果是对象，取_id
+//         }
+//         if (typeof guide === 'string') {
+//           return guide; // 如果已经是ID字符串，直接返回
+//         }
+//         return null;
+//       })
+//       .filter(Boolean); // 过滤掉空值
+//   }
+
+//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
+
+//   if (!updatedTour) {
+//     return next(new AppError('No tour found with that ID.', 404));
+//   }
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       data: updatedTour,
+//     },
+//   });
+// });
 exports.updateTour = catchAsync(async (req, res, next) => {
   console.log('Incoming Request body:', req.body);
 
-  // 处理 guides 字段，把对象转成 ObjectId
+  // 处理 guides 字段，只取 _id
   if (req.body.guides && Array.isArray(req.body.guides)) {
     req.body.guides = req.body.guides
       .map((guide) => {
@@ -161,11 +195,26 @@ exports.updateTour = catchAsync(async (req, res, next) => {
           return guide._id; // 如果是对象，取_id
         }
         if (typeof guide === 'string') {
-          return guide; // 如果已经是ID字符串，直接返回
+          return guide; // 如果已经是ID字符串，直接用
         }
         return null;
       })
-      .filter(Boolean); // 过滤掉空值
+      .filter(Boolean);
+  }
+
+  // 处理 locations 字段，只保留必要字段
+  if (req.body.locations && Array.isArray(req.body.locations)) {
+    req.body.locations = req.body.locations.map((loc) => {
+      if (typeof loc === 'object') {
+        return {
+          type: loc.type || 'Point',
+          coordinates: loc.coordinates,
+          description: loc.description,
+          day: loc.day,
+        };
+      }
+      return loc;
+    });
   }
 
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
