@@ -35,6 +35,14 @@ router.get(
   authController.restrictTo('admin', 'lead-guide'),
   viewsController.getCreateTour,
 );
+
+router.get(
+  '/update-tour/:id',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  viewsController.getUpdateTour,
+);
+
 router.post(
   '/submit-tour-data',
   authController.protect,
@@ -42,12 +50,6 @@ router.post(
   tourController.uploadTourImages,
   tourController.resizeTourImages,
   tourController.createTour,
-);
-router.get(
-  '/update-tour/:id',
-  authController.protect,
-  authController.restrictTo('admin', 'lead-guide'),
-  viewsController.getUpdateTour,
 );
 
 module.exports = router;

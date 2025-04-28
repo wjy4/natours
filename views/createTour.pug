@@ -57,7 +57,7 @@ block content
           label.form__label Other Images
           label.custom-file-upload
             | Choose Other Images
-            input#images(type='file', name='images', accept='image/*', multiple style="display: none;")
+            input#images(type='file', name='images', accept='image/*', multiple style="display: none;" required data-max="3")
           .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
         .form__group.right
            button.btn.btn--green#btn-create-tour(type='button') Create Tour

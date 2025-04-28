@@ -32,7 +32,16 @@
     if (imagesInput) {
       imagesInput.addEventListener('change', function (e) {
         previewImages.innerHTML = '';
-        Array.from(e.target.files).forEach((file) => {
+        const files = Array.from(e.target.files);
+
+        // 限制最多只能选择 3 张图片
+        if (files.length !== 3) {
+          showAlert('error', 'You must select exactly 3 images.');
+          imagesInput.value = ''; // 重置 input
+          return;
+        }
+
+        files.forEach((file) => {
           const reader = new FileReader();
           reader.onload = function (event) {
             const img = document.createElement('img');
@@ -93,10 +102,10 @@
   });
 
   // 自动绑定自定义上传按钮
-  document.querySelectorAll('.custom-file-upload').forEach((label) => {
-    const input = label.querySelector('input');
-    label.addEventListener('click', () => {
-      input.click();
-    });
-  });
+  // document.querySelectorAll('.custom-file-upload').forEach((label) => {
+  //   const input = label.querySelector('input');
+  //   label.addEventListener('click', () => {
+  //     input.click();
+  //   });
+  // });
 })();
