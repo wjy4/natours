@@ -3,16 +3,10 @@ extends base
 block content
   .section-tours
     .u-center-text.u-margin-bottom-big
-      h2.heading-secondary
-        | Create New Tour
-
-    // Progress bar
-    .row
-      .progress-container(style="display:none")
-        .progress-bar(style="width: 0%; height: 5px; background-color: green;")
+      h2.heading-secondary Create New Tour
 
     .row
-      form.form(method='POST', enctype='multipart/form-data')
+      form#form-create.form(method='POST', enctype='multipart/form-data')
         .form__group
           label.form__label(for='name') Name
           input#name.form__input(type='text', name='name', required)
@@ -33,11 +27,11 @@ block content
             option(value='difficult') Difficult
 
         .form__group
-          label.form__label(for='price') Price ($)
+          label.form__label(for='price') Price (£)
           input#price.form__input(type='number', name='price', required)
 
         .form__group
-          label.form__label(for='priceDiscount') Price Discount ($)
+          label.form__label(for='priceDiscount') Price Discount (£)
           input#priceDiscount.form__input(type='number', name='priceDiscount')
 
         .form__group
@@ -49,7 +43,7 @@ block content
           textarea#description.form__input(name='description', rows='4')
 
         .form__group
-          label.form__label(for='startDates') Start Dates (comma-separated yyyy-mm-dd)
+          label.form__label(for='startDates') Start Dates
           input#startDates.form__input(type='text', name='startDates')
 
         .form__group
@@ -63,56 +57,56 @@ block content
         .form__group.right
           button.btn.btn--green#btn-create-tour(type='submit') Create Tour
 
+    // flatpickr日历控件
+    script(src="https://cdn.jsdelivr.net/npm/flatpickr")
+
+    script.
+      flatpickr("#startDates", {
+        mode: "multiple",
+        dateFormat: "Y-m-d"
+      });
+
     // 上传处理脚本
-  script.
-    const form = document.querySelector('.form');
-    const progressContainer = document.querySelector('.progress-container');
-    const progressBar = document.querySelector('.progress-bar');
-    const btn = document.getElementById('btn-create-tour');
-  
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      btn.textContent = 'Uploading...';
-  
-      const formData = new FormData(form);
-  
-      // 手动处理 startDates 字段 (转成数组)
-      const startDatesInput = form.querySelector('#startDates').value;
-      if (startDatesInput) {
-        startDatesInput.split(',').forEach(date => {
-          formData.append('startDates', new Date(date.trim()));
-        });
-      }
-  
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/submit-tour-data');
-  
-        xhr.upload.onprogress = function (e) {
-          if (e.lengthComputable) {
-            const percent = (e.loaded / e.total) * 100;
-            progressContainer.style.display = 'block';
-            progressBar.style.width = `${percent}%`;
-          }
-        };
-  
-        xhr.onload = function () {
-          if (xhr.status === 201 || xhr.status === 200) {
-            alert('Tour created successfully!');
-            window.location.href = '/manage-tours';
-          } else {
-            alert('Something went wrong!');
-          }
-        };
-  
-        xhr.onerror = function () {
-          alert('Upload failed!');
-        };
-  
-        xhr.send(formData);
-      } catch (err) {
-        console.error(err);
-        alert('Error uploading!');
-      }
-    });
-  
+    script.
+      const form = document.getElementById('form-create');
+      const btn = document.getElementById('btn-create-tour');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        btn.textContent = 'Creating...'; // spinner效果
+
+        const formData = new FormData(form);
+
+        const startDatesInput = document.getElementById('startDates').value;
+        if (startDatesInput) {
+          formData.delete('startDates'); // 清空原来的
+          startDatesInput.split(',').forEach(date => {
+            formData.append('startDates', new Date(date.trim()));
+          });
+        }
+
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/submit-tour-data');
+
+          xhr.onload = function () {
+            if (xhr.status === 201 || xhr.status === 200) {
+              showAlert('success', 'Tour created successfully!');
+              setTimeout(() => {
+                window.location.href = '/manage-tours';
+              }, 1500);
+            } else {
+              showAlert('error', 'Something went wrong!');
+            }
+          };
+
+          xhr.onerror = function () {
+            showAlert('error', 'Upload failed!');
+          };
+
+          xhr.send(formData);
+        } catch (err) {
+          console.error(err);
+          showAlert('error', 'Error uploading!');
+        }
+      });

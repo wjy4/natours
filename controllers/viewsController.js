@@ -190,6 +190,19 @@ const getCreateTour = (req, res) => {
   });
 };
 
+const getUpdateTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID', 404));
+  }
+
+  res.status(200).render('updateTour', {
+    title: 'Update Tour',
+    tour,
+  });
+});
+
 module.exports = {
   alerts,
   getOverview,
@@ -201,4 +214,5 @@ module.exports = {
   getSignupForm,
   getManageTours,
   getCreateTour,
+  getUpdateTour,
 };

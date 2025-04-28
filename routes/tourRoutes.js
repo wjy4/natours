@@ -58,5 +58,10 @@ router
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour,
   );
-
+router.post(
+  '/submit-tour-data',
+  tourController.uploadTourImages,
+  tourController.resizeTourImages,
+  tourController.createTour,
+);
 module.exports = router;
