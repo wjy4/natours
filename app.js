@@ -29,7 +29,7 @@ const app = express();
 // Set Pug as the template engine
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-
+app.set('trust proxy', 1);
 // 🔥 必须在 express.json() 之前处理 Stripe webhook
 app.post(
   '/api/v1/booking/webhook-checkout',
