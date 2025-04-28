@@ -1,11 +1,12 @@
 /* public/js/createTour.js */
 /* eslint-disable */
-flatpickr('#startDates', {
-  mode: 'multiple',
-  dateFormat: 'Y-m-d',
-});
-
 (function () {
+  // 初始化 flatpickr
+  flatpickr('#startDates', {
+    mode: 'multiple',
+    dateFormat: 'Y-m-d',
+  });
+
   const form = document.getElementById('form-create');
   const btn = document.getElementById('btn-create-tour');
   const coverInput = document.getElementById('imageCover');
