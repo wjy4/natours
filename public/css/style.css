@@ -1704,21 +1704,28 @@ html {
   scroll-behavior: smooth;
 }
 /* --- CUSTOM UPDATE: Back To Top Button --- */
+/* 美化返回顶部按钮 */
 .back-to-top {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
   background-color: #55c57a;
   color: white;
-  padding: 1rem 1.2rem;
+  padding: 1.2rem 1.5rem;
   border-radius: 50%;
   font-size: 2rem;
   text-align: center;
   display: none;
   z-index: 10000;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
   transition: all 0.3s;
 }
 
 .back-to-top:hover {
   background-color: #28b487;
+  transform: translateY(-3px) scale(1.1);
+}
+
+.nav__el:hover {
+  border-bottom: 2px solid currentColor;
 }
