@@ -1,12 +1,14 @@
-// 👇 上传处理和图片预览逻辑
-script.window.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('form-create');
-  const btn = document.getElementById('btn-create-tour');
-  const coverInput = document.getElementById('imageCover');
-  const imagesInput = document.getElementById('images');
-  const previewCover = document.getElementById('preview-cover');
-  const previewImages = document.querySelector('.preview-images');
+/* public/js/createTour.js */
+/* eslint-disable */
 
+const form = document.getElementById('form-create');
+const btn = document.getElementById('btn-create-tour');
+const coverInput = document.getElementById('imageCover');
+const imagesInput = document.getElementById('images');
+const previewCover = document.getElementById('preview-cover');
+const previewImages = document.querySelector('.preview-images');
+
+window.addEventListener('DOMContentLoaded', function () {
   if (coverInput) {
     coverInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
@@ -23,7 +25,7 @@ script.window.addEventListener('DOMContentLoaded', function () {
 
   if (imagesInput) {
     imagesInput.addEventListener('change', function (e) {
-      previewImages.innerHTML = ''; // 清空之前的预览
+      previewImages.innerHTML = '';
       Array.from(e.target.files).forEach((file) => {
         const reader = new FileReader();
         reader.onload = function (event) {
