@@ -3,108 +3,13 @@ extends base
 block content
   .section-tours
     .u-center-text.u-margin-bottom-big
-      h2.heading-secondary Update Tour
+      h2.heading-secondary Edit Tour
 
     .row
-      form#form-update.form(method='POST', enctype='multipart/form-data')
+      form#form-update.form(method='POST')
         .form__group
-          label.form__label(for='name') Name
-          input#name.form__input(type='text', name='name', required, value=tour.name)
-
-        .form__group
-          label.form__label(for='duration') Duration (days)
-          input#duration.form__input(type='number', name='duration', required, value=tour.duration)
-
-        .form__group
-          label.form__label(for='maxGroupSize') Max Group Size
-          input#maxGroupSize.form__input(type='number', name='maxGroupSize', required, value=tour.maxGroupSize)
-
-        .form__group
-          label.form__label(for='difficulty') Difficulty
-          select#difficulty.form__input(name='difficulty', required)
-            option(value='easy', selected=tour.difficulty === 'easy') Easy
-            option(value='medium', selected=tour.difficulty === 'medium') Medium
-            option(value='difficult', selected=tour.difficulty === 'difficult') Difficult
-
-        .form__group
-          label.form__label(for='price') Price (£)
-          input#price.form__input(type='number', name='price', required, value=tour.price)
-
-        .form__group
-          label.form__label(for='priceDiscount') Price Discount (£)
-          input#priceDiscount.form__input(type='number', name='priceDiscount', value=tour.priceDiscount)
-
-        .form__group
-          label.form__label(for='summary') Summary
-          input#summary.form__input(type='text', name='summary', required, value=tour.summary)
-
-        .form__group
-          label.form__label(for='description') Description
-          textarea#description.form__input(name='description', rows='4')= tour.description
-
-        .form__group
-          label.form__label(for='startDates') Start Dates
-          input#startDates.form__input(type='date', name='startDates', multiple, value=(tour.startDates && tour.startDates.length > 0 ? tour.startDates[0].toISOString().slice(0, 10) : ''))
-
-        .form__group
-          label.form__label(for='imageCover') Cover Image
-          input#imageCover.form__upload(type='file', accept='image/*', name='imageCover')
-
-        .form__group
-          label.form__label(for='images') Other Images
-          input#images.form__upload(type='file', accept='image/*', multiple, name='images')
+          label.form__label(for='jsonData') Edit Tour JSON
+          textarea#jsonData.form__input(name='jsonData', rows='20', placeholder='Paste your Tour JSON here...')
 
         .form__group.right
-          button.btn.btn--green#btn-update-tour(type='submit')
-            | Update Tour
-
-    script(src="https://cdn.jsdelivr.net/npm/flatpickr") // 引入flatpickr日历插件
-    script.
-      flatpickr("#startDates", {
-        mode: "multiple",
-        dateFormat: "Y-m-d"
-      });
-
-    script.
-      const form = document.getElementById('form-update');
-      const btn = document.getElementById('btn-update-tour');
-      
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        btn.textContent = 'Updating...'; // spinner效果
-
-        const formData = new FormData(form);
-
-        const startDatesInput = form.querySelector('#startDates').value;
-        if (startDatesInput) {
-          formData.delete('startDates'); // 先清空
-          startDatesInput.split(',').forEach(date => {
-            formData.append('startDates', new Date(date.trim()));
-          });
-        }
-
-        try {
-          const xhr = new XMLHttpRequest();
-          xhr.open('PATCH', `/api/v1/tours/${'${tour._id}'}`);
-          
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              showAlert('success', 'Tour updated successfully!');
-              setTimeout(() => {
-                window.location.href = '/manage-tours';
-              }, 1500);
-            } else {
-              showAlert('error', 'Something went wrong while updating!');
-            }
-          };
-
-          xhr.onerror = function () {
-            showAlert('error', 'Upload failed!');
-          };
-
-          xhr.send(formData);
-        } catch (err) {
-          console.error(err);
-          showAlert('error', 'Error updating!');
-        }
-      });
+          button.btn.btn--green#btn-update-tour(type='button') Update Tour
