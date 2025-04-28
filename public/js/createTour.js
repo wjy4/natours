@@ -85,3 +85,10 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+// 自动绑定自定义上传按钮
+document.querySelectorAll('.custom-file-upload').forEach((label) => {
+  const input = label.querySelector('input');
+  label.addEventListener('click', () => {
+    input.click();
+  });
+});
