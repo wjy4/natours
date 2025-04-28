@@ -8,7 +8,6 @@ block content
     .row
       form#form-create.form(method='POST', enctype='multipart/form-data')
 
-        /* --- 基础字段 --- */
         .form__group
           label.form__label(for='name') Name
           input#name.form__input(type='text', name='name', required=true)
@@ -44,12 +43,12 @@ block content
           label.form__label(for='description') Description
           textarea#description.form__input(name='description', rows='4')
 
-        /* --- 日期字段 --- */
+
         .form__group
           label.form__label(for='startDates') Start Dates (comma separated)
           input#startDates.form__input(type='text', name='startDates')
 
-        /* --- 地理位置 Start Location --- */
+
         .form__group
           label.form__label(for='startLocationDescription') Start Location Description
           input#startLocationDescription.form__input(type='text', name='startLocationDescription')
@@ -65,16 +64,12 @@ block content
         .form__group
           label.form__label(for='startLocationLongitude') Start Location Longitude
           input#startLocationLongitude.form__input(type='number', name='startLocationLongitude', step="any")
-
-        /* --- 是否Secret Tour --- */
         .form__group
           label.form__label(for='secretTour') Secret Tour
           select#secretTour.form__input(name='secretTour')
             option(value='false') No
             option(value='true') Yes
 
-        /* --- 封面图片 Cover Image --- */
-        /* --- 封面图片 Cover Image --- */
         .form__group
           label.form__label(for='imageCover') Cover Image
           .custom-file-upload
@@ -82,7 +77,6 @@ block content
             input#imageCover(type='file', name='imageCover', accept='image/*', style='display:none;' required=true)
           img#preview-cover(src='', alt='Cover Preview', style='display:none; max-width: 200px; margin-top: 1rem;')
 
-        /* --- 其他图片 Other Images --- */
         .form__group
           label.form__label(for='images') Other Images
           .custom-file-upload
@@ -90,12 +84,9 @@ block content
             input#images(type='file', name='images', accept='image/*', multiple=true, data-max='3', style='display:none;')
           .preview-images(style='margin-top: 1rem; display:flex; flex-wrap:wrap; gap:10px;')
 
-
-        /* --- 指定Guides --- */
         .form__group
           label.form__label(for='guides') Guides (comma separated User IDs)
           input#guides.form__input(type='text', name='guides')
 
-        /* --- 提交按钮 --- */
         .form__group.right
           button.btn.btn--green#btn-create-tour(type='button') Create Tour
