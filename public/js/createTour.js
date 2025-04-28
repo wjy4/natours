@@ -1,7 +1,6 @@
 /* public/js/createTour.js */
 /* eslint-disable */
 (function () {
-  // 初始化 flatpickr
   flatpickr('#startDates', {
     mode: 'multiple',
     dateFormat: 'Y-m-d',
@@ -34,10 +33,9 @@
         previewImages.innerHTML = '';
         const files = Array.from(e.target.files);
 
-        // 限制最多只能选择 3 张图片
         if (files.length !== 3) {
           showAlert('error', 'You must select exactly 3 images.');
-          imagesInput.value = ''; // 重置 input
+          imagesInput.value = '';
           return;
         }
 
@@ -63,11 +61,50 @@
 
         const formData = new FormData(form);
 
+        // 处理 startDates
         const startDatesInput = document.getElementById('startDates').value;
         if (startDatesInput) {
           formData.delete('startDates');
           startDatesInput.split(',').forEach((date) => {
             formData.append('startDates', new Date(date.trim()));
+          });
+        }
+
+        // 处理 startLocation
+        const latitude = document.getElementById(
+          'startLocationLatitude',
+        )?.value;
+        const longitude = document.getElementById(
+          'startLocationLongitude',
+        )?.value;
+        const description = document.getElementById(
+          'startLocationDescription',
+        )?.value;
+        const address = document.getElementById('startLocationAddress')?.value;
+
+        if (latitude && longitude) {
+          const startLocation = {
+            type: 'Point',
+            coordinates: [parseFloat(longitude), parseFloat(latitude)], // 注意顺序: 经度,纬度
+            description: description || '',
+            address: address || '',
+          };
+          formData.append('startLocation', JSON.stringify(startLocation));
+        }
+
+        // 处理 secretTour
+        const secretTourInput = document.getElementById('secretTour')?.value;
+        if (secretTourInput) {
+          formData.set('secretTour', secretTourInput === 'true');
+        }
+
+        // 处理 guides
+        const guidesInput = document.getElementById('guides')?.value;
+        if (guidesInput) {
+          const guidesArray = guidesInput.split(',').map((id) => id.trim());
+          formData.delete('guides');
+          guidesArray.forEach((guide) => {
+            formData.append('guides', guide);
           });
         }
 
@@ -100,12 +137,4 @@
       });
     }
   });
-
-  // 自动绑定自定义上传按钮
-  // document.querySelectorAll('.custom-file-upload').forEach((label) => {
-  //   const input = label.querySelector('input');
-  //   label.addEventListener('click', () => {
-  //     input.click();
-  //   });
-  // });
 })();
