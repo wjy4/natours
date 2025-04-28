@@ -49,6 +49,7 @@ router.post(
   authController.restrictTo('admin', 'lead-guide'),
   tourController.uploadTourImages,
   tourController.resizeTourImages,
+  tourController.parseTourFields,
   tourController.createTour,
 );
 

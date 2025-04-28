@@ -87,6 +87,22 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
 //   next();
 // });
 
+exports.parseTourFields = (req, res, next) => {
+  try {
+    if (typeof req.body.startLocation === 'string') {
+      req.body.startLocation = JSON.parse(req.body.startLocation);
+    }
+    if (typeof req.body.locations === 'string') {
+      req.body.locations = JSON.parse(req.body.locations);
+    }
+    next();
+  } catch (err) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid JSON format for startLocation or locations',
+    });
+  }
+};
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
