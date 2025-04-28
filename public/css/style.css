@@ -1405,3 +1405,7 @@ body {
   border-radius: 5px;
   font-weight: bold;
 }
+
+.no-bookings-message .heading-secondary {
+  margin-bottom: 2rem;
+}
