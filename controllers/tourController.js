@@ -154,48 +154,19 @@ exports.createTour = factory.createOne(Tour);
 exports.updateTour = catchAsync(async (req, res, next) => {
   console.log('Incoming Request body:', JSON.stringify(req.body, null, 2));
 
-  // 处理 guides 字段：对象数组转 ObjectId数组
+  // 修正 guides 字段
   if (req.body.guides && Array.isArray(req.body.guides)) {
     req.body.guides = req.body.guides
       .map((guide) => {
         if (typeof guide === 'object' && guide._id) {
-          return guide._id;
+          return guide._id; // 拿到 _id
         }
         if (typeof guide === 'string') {
-          return guide;
+          return guide; // 已经是ID
         }
-        return null;
+        return null; // 如果guide是错误的，过滤掉
       })
-      .filter(Boolean);
-  }
-
-  // 处理 locations 字段：剥离_id，修正 coordinates
-  if (req.body.locations && Array.isArray(req.body.locations)) {
-    req.body.locations = req.body.locations.map((loc) => {
-      if (typeof loc === 'object') {
-        return {
-          type: loc.type || 'Point',
-          coordinates:
-            Array.isArray(loc.coordinates) &&
-            typeof loc.coordinates[0] === 'number'
-              ? loc.coordinates
-              : [-0.1276, 51.5072], // 如果坐标异常，给个默认伦敦位置
-          description: loc.description,
-          day: loc.day,
-        };
-      }
-      return loc;
-    });
-  }
-
-  // 处理 startLocation 字段（保险）
-  if (req.body.startLocation && typeof req.body.startLocation === 'object') {
-    if (
-      !Array.isArray(req.body.startLocation.coordinates) ||
-      typeof req.body.startLocation.coordinates[0] !== 'number'
-    ) {
-      req.body.startLocation.coordinates = [-0.1276, 51.5072];
-    }
+      .filter(Boolean); // 过滤掉空值
   }
 
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
