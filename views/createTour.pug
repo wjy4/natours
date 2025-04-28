@@ -63,55 +63,56 @@ block content
         .form__group.right
           button.btn.btn--green#btn-create-tour(type='submit') Create Tour
 
-// 上传处理脚本
-script.
-  const form = document.querySelector('.form');
-  const progressContainer = document.querySelector('.progress-container');
-  const progressBar = document.querySelector('.progress-bar');
-  const btn = document.getElementById('btn-create-tour');
-
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    btn.textContent = 'Uploading...';
-
-    const formData = new FormData(form);
-
-    // 手动处理 startDates 字段 (转成数组)
-    const startDatesInput = form.querySelector('#startDates').value;
-    if (startDatesInput) {
-      startDatesInput.split(',').forEach(date => {
-        formData.append('startDates', new Date(date.trim()));
-      });
-    }
-
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/submit-tour-data');
-
-      xhr.upload.onprogress = function (e) {
-        if (e.lengthComputable) {
-          const percent = (e.loaded / e.total) * 100;
-          progressContainer.style.display = 'block';
-          progressBar.style.width = `${percent}%`;
-        }
-      };
-
-      xhr.onload = function () {
-        if (xhr.status === 201 || xhr.status === 200) {
-          alert('Tour created successfully!');
-          window.location.href = '/manage-tours';
-        } else {
-          alert('Something went wrong!');
-        }
-      };
-
-      xhr.onerror = function () {
-        alert('Upload failed!');
-      };
-
-      xhr.send(formData);
-    } catch (err) {
-      console.error(err);
-      alert('Error uploading!');
-    }
-  });
+    // 上传处理脚本
+  script.
+    const form = document.querySelector('.form');
+    const progressContainer = document.querySelector('.progress-container');
+    const progressBar = document.querySelector('.progress-bar');
+    const btn = document.getElementById('btn-create-tour');
+  
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      btn.textContent = 'Uploading...';
+  
+      const formData = new FormData(form);
+  
+      // 手动处理 startDates 字段 (转成数组)
+      const startDatesInput = form.querySelector('#startDates').value;
+      if (startDatesInput) {
+        startDatesInput.split(',').forEach(date => {
+          formData.append('startDates', new Date(date.trim()));
+        });
+      }
+  
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/submit-tour-data');
+  
+        xhr.upload.onprogress = function (e) {
+          if (e.lengthComputable) {
+            const percent = (e.loaded / e.total) * 100;
+            progressContainer.style.display = 'block';
+            progressBar.style.width = `${percent}%`;
+          }
+        };
+  
+        xhr.onload = function () {
+          if (xhr.status === 201 || xhr.status === 200) {
+            alert('Tour created successfully!');
+            window.location.href = '/manage-tours';
+          } else {
+            alert('Something went wrong!');
+          }
+        };
+  
+        xhr.onerror = function () {
+          alert('Upload failed!');
+        };
+  
+        xhr.send(formData);
+      } catch (err) {
+        console.error(err);
+        alert('Error uploading!');
+      }
+    });
+  
