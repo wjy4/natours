@@ -1507,3 +1507,218 @@ body {
     font-size: 1.3rem;
   }
 }
+
+/* ------------------------------------------ */
+/* 📱 (Custom Responsive Updates for Header, Buttons, Tours) */
+/* ------------------------------------------ */
+/* --- CUSTOM UPDATE START --- */
+
+/* 中尺寸屏幕 (平板 ~ 900px) */
+@media only screen and (max-width: 56.25em) {
+  .header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 2rem 3rem;
+  }
+
+  .nav.nav--tours {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .header__logo {
+    flex: 0 1 auto;
+    margin: 0 auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .nav.nav--user {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .nav__el {
+    font-size: 1.4rem;
+    padding: 1rem 2rem;
+  }
+}
+
+/* 小尺寸屏幕 (手机 ~ 600px) */
+@media only screen and (max-width: 37.5em) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav.nav--tours,
+  .nav.nav--user {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .nav__el {
+    margin: 0.8rem 0;
+    font-size: 1.3rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .heading-primary {
+    font-size: 3rem;
+    width: 100%;
+  }
+
+  .btn,
+  .btn-small {
+    font-size: 1.4rem;
+    padding: 1rem 2rem;
+  }
+}
+
+/* 超小尺寸 (极限小屏手机 < 400px) */
+@media only screen and (max-width: 25em) {
+  .header {
+    padding: 1.5rem;
+  }
+
+  .nav__el {
+    font-size: 1.2rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .heading-primary {
+    font-size: 2.5rem;
+  }
+}
+
+/* Tours Card区域 Grid自适应优化 */
+@media only screen and (max-width: 56.25em) {
+  .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+    gap: 3rem;
+  }
+}
+
+@media only screen and (max-width: 37.5em) {
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* Tour卡片图片调整，防止拉爆 */
+.card__picture {
+  height: 20rem;
+}
+
+/* 卡片内部padding微调 */
+.card__details {
+  padding: 2rem;
+  grid-gap: 1.5rem;
+}
+
+.card__footer {
+  padding: 2rem;
+}
+
+/* --- CUSTOM UPDATE END --- */
+/* --- CUSTOM UPDATE: Hamburger Menu --- */
+.header__burger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.header__burger div {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+}
+
+@media only screen and (max-width: 37.5em) {
+  .header__burger {
+    display: flex;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+
+  .nav.nav--user,
+  .nav.nav--tours {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav.active {
+    display: flex;
+  }
+}
+/* --- CUSTOM UPDATE: Hamburger Menu --- */
+.header__burger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.header__burger div {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+}
+
+@media only screen and (max-width: 37.5em) {
+  .header__burger {
+    display: flex;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+
+  .nav.nav--user,
+  .nav.nav--tours {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav.active {
+    display: flex;
+  }
+}
+/* --- CUSTOM UPDATE: Card Hover --- */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+}
+html {
+  scroll-behavior: smooth;
+}
+/* --- CUSTOM UPDATE: Back To Top Button --- */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #55c57a;
+  color: white;
+  padding: 1rem 1.2rem;
+  border-radius: 50%;
+  font-size: 2rem;
+  text-align: center;
+  display: none;
+  z-index: 10000;
+  transition: all 0.3s;
+}
+
+.back-to-top:hover {
+  background-color: #28b487;
+}
