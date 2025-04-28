@@ -151,59 +151,10 @@ exports.createTour = factory.createOne(Tour);
 //   });
 // });
 
-// exports.updateTour = catchAsync(async (req, res, next) => {
-//   console.log('Incoming Request body:', req.body);
-
-//   // 处理 guides 字段，只取 _id
-//   if (req.body.guides && Array.isArray(req.body.guides)) {
-//     req.body.guides = req.body.guides
-//       .map((guide) => {
-//         if (typeof guide === 'object' && guide._id) {
-//           return guide._id; // 如果是对象，取_id
-//         }
-//         if (typeof guide === 'string') {
-//           return guide; // 如果已经是ID字符串，直接用
-//         }
-//         return null;
-//       })
-//       .filter(Boolean);
-//   }
-
-//   // 处理 locations 字段，只保留必要字段
-//   if (req.body.locations && Array.isArray(req.body.locations)) {
-//     req.body.locations = req.body.locations.map((loc) => {
-//       if (typeof loc === 'object') {
-//         return {
-//           type: loc.type || 'Point',
-//           coordinates: loc.coordinates,
-//           description: loc.description,
-//           day: loc.day,
-//         };
-//       }
-//       return loc;
-//     });
-//   }
-
-//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-
-//   if (!updatedTour) {
-//     return next(new AppError('No tour found with that ID.', 404));
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       data: updatedTour,
-//     },
-//   });
-// });
 exports.updateTour = catchAsync(async (req, res, next) => {
-  console.log('Incoming Request body:', req.body);
+  console.log('Incoming Request body:', JSON.stringify(req.body, null, 2));
 
-  // 处理 guides 字段：对象数组转ObjectId数组
+  // 处理 guides 字段：对象数组转 ObjectId数组
   if (req.body.guides && Array.isArray(req.body.guides)) {
     req.body.guides = req.body.guides
       .map((guide) => {
@@ -218,15 +169,17 @@ exports.updateTour = catchAsync(async (req, res, next) => {
       .filter(Boolean);
   }
 
-  // 处理 locations 字段：剥离_id，只保留type, coordinates, description, day
+  // 处理 locations 字段：剥离_id，修正 coordinates
   if (req.body.locations && Array.isArray(req.body.locations)) {
     req.body.locations = req.body.locations.map((loc) => {
       if (typeof loc === 'object') {
         return {
           type: loc.type || 'Point',
-          coordinates: Array.isArray(loc.coordinates)
-            ? loc.coordinates
-            : [0, 0],
+          coordinates:
+            Array.isArray(loc.coordinates) &&
+            typeof loc.coordinates[0] === 'number'
+              ? loc.coordinates
+              : [-0.1276, 51.5072], // 如果坐标异常，给个默认伦敦位置
           description: loc.description,
           day: loc.day,
         };
@@ -235,10 +188,13 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 处理 startLocation 字段
+  // 处理 startLocation 字段（保险）
   if (req.body.startLocation && typeof req.body.startLocation === 'object') {
-    if (!Array.isArray(req.body.startLocation.coordinates)) {
-      req.body.startLocation.coordinates = [0, 0];
+    if (
+      !Array.isArray(req.body.startLocation.coordinates) ||
+      typeof req.body.startLocation.coordinates[0] !== 'number'
+    ) {
+      req.body.startLocation.coordinates = [-0.1276, 51.5072];
     }
   }
 
@@ -251,7 +207,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     return next(new AppError('No tour found with that ID.', 404));
   }
 
-  console.log('✅ Tour updated successfully');
+  console.log('✅ Tour updated successfully!');
 
   res.status(200).json({
     status: 'success',
