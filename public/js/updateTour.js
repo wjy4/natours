@@ -36,12 +36,28 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
       const parsedData = JSON.parse(jsonData);
 
-      // 删除不该提交的字段
+      // 删除不该提交的顶级字段
       delete parsedData._id;
       delete parsedData.id;
       delete parsedData.__v;
       delete parsedData.durationWeeks;
       delete parsedData.reviews;
+
+      // 删除 guides 每个对象中的 _id
+      if (Array.isArray(parsedData.guides)) {
+        parsedData.guides = parsedData.guides.map((guide) => {
+          const { _id, ...rest } = guide;
+          return rest;
+        });
+      }
+
+      // 删除 locations 每个对象中的 _id
+      if (Array.isArray(parsedData.locations)) {
+        parsedData.locations = parsedData.locations.map((location) => {
+          const { _id, ...rest } = location;
+          return rest;
+        });
+      }
 
       const res = await fetch(`/api/v1/tours/${tourId}`, {
         method: 'PATCH',
