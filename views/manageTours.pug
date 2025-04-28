@@ -24,21 +24,22 @@ block content
               a.btn.btn--green(href=`/update-tour/${tour._id}`) Edit
               button.btn.btn--red(data-id=`${tour._id}` onclick="deleteTour(this)") Delete
 
-script.
-  async function deleteTour(btn) {
-    const id = btn.getAttribute('data-id');
-    try {
-      const res = await fetch(`/api/v1/tours/${id}`, {
-        method: 'DELETE'
-      });
-      if (res.status === 204) {
-        alert('Tour deleted successfully!');
-        location.reload();
-      } else {
+  script.
+    async function deleteTour(btn) {
+      const id = btn.getAttribute('data-id');
+      try {
+        const res = await fetch(`/api/v1/tours/${id}`, {
+          method: 'DELETE'
+        });
+        if (res.status === 204) {
+          alert('Tour deleted successfully!');
+          location.reload();
+        } else {
+          alert('Error deleting tour!');
+        }
+      } catch (err) {
+        console.error(err);
         alert('Error deleting tour!');
       }
-    } catch (err) {
-      console.error(err);
-      alert('Error deleting tour!');
     }
-  }
+  
