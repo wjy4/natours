@@ -34,48 +34,31 @@ const createSendToken = (user, statusCode, res) => {
     },
   });
 };
-// exports.signup = catchAsync(async (req, res, next) => {
-//   const newUser = await User.create({
-//     name: req.body.name,
-//     email: req.body.email,
-//     password: req.body.password,
-//     passwordConfirm: req.body.passwordConfirm,
-//     passwordChangedAt: req.body.passwordChangedAt
-//       ? new Date(req.body.passwordChangedAt)
-//       : undefined,
-//     role: req.body.role,
-//   });
-
-//   const token = signToken(newUser._id);
-
-//   res.status(201).json({
-//     status: 'Success',
-//     token,
-//     data: {
-//       user: newUser,
-//     },
-//   });
-// });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  let userData = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  };
+  try {
+    let userData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+    };
 
-  // 🌍 在 `dev` 模式允许所有数据，在 `prod` 只存安全字段
-  if (process.env.NODE_ENV === 'development') {
-    userData = { ...req.body }; // ⚠️ 在 dev 允许所有字段
-  } else {
-    userData.role = 'user'; // 🔒 在 prod 强制 role 为 'user'
+    if (process.env.NODE_ENV === 'development') {
+      userData = { ...req.body };
+    } else {
+      userData.role = 'user';
+    }
+
+    const newUser = await User.create(userData);
+
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome();
+    createSendToken(newUser, 201, res);
+  } catch (err) {
+    console.error('[SIGNUP ERROR]', err); // ⭐⭐ 打印出来具体错误
+    next(err);
   }
-
-  const newUser = await User.create(userData);
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  await new Email(newUser, url).sendWelcome();
-  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
