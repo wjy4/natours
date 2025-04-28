@@ -223,105 +223,54 @@ if (generateBtn && jsonTextarea) {
   const btn = document.getElementById('btn-create-tour');
   const coverInput = document.getElementById('imageCover');
   const imagesInput = document.getElementById('images');
-  const previewCover = document.getElementById('preview-cover');
-  const previewImages = document.querySelector('.preview-images');
+  const jsonTextarea = document.getElementById('jsonData');
 
-  if (coverInput) {
-    coverInput.addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          previewCover.src = event.target.result;
-          previewCover.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
+  btn.addEventListener('click', async function (e) {
+    e.preventDefault();
+    btn.textContent = 'Creating...';
 
-  if (imagesInput) {
-    imagesInput.addEventListener('change', function (e) {
-      previewImages.innerHTML = '';
-      const files = Array.from(e.target.files);
+    try {
+      const parsedData = JSON.parse(jsonTextarea.value);
 
-      if (files.length !== 3) {
-        showAlert('error', 'You must select exactly 3 images.');
-        imagesInput.value = '';
-        return;
-      }
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.style.width = '100px';
-          img.style.height = '100px';
-          img.style.objectFit = 'cover';
-          previewImages.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+      // 第一步：提交Tour信息
+      const res = await fetch('/submit-tour-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsedData),
       });
-    });
-  }
+      const data = await res.json();
 
-  if (form && btn) {
-    btn.addEventListener('click', async function (e) {
-      e.preventDefault();
-      btn.textContent = 'Creating...';
-
-      const formData = new FormData(form);
-
-      // 解析JSON区域
-      const jsonData = document.getElementById('jsonData')?.value;
-
-      if (!jsonData) {
-        showAlert('error', 'Please paste your JSON tour data!');
-        btn.textContent = 'Create Tour';
-        return;
+      if (data.status !== 'success') {
+        throw new Error('Tour creation failed!');
       }
 
-      try {
-        const parsedData = JSON.parse(jsonData);
+      const tourId = data.data.data._id;
 
-        // 把JSON字段动态追加到 FormData
-        for (const key in parsedData) {
-          if (key === 'startLocation' || key === 'locations') {
-            formData.append(key, JSON.stringify(parsedData[key]));
-          } else if (key === 'startDates' || key === 'guides') {
-            parsedData[key].forEach((item) => formData.append(key, item));
-          } else {
-            formData.append(key, parsedData[key]);
-          }
-        }
+      // 第二步：上传图片
+      const formData = new FormData();
+      formData.append('imageCover', coverInput.files[0]);
+      Array.from(imagesInput.files).forEach((file) =>
+        formData.append('images', file),
+      );
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/submit-tour-data');
+      const imgRes = await fetch(`/submit-tour-images/${tourId}`, {
+        method: 'PATCH',
+        body: formData,
+      });
 
-        xhr.onload = function () {
-          if (xhr.status === 201 || xhr.status === 200) {
-            showAlert('success', 'Tour created successfully!');
-            setTimeout(() => {
-              window.location.href = '/manage-tours';
-            }, 1500);
-          } else {
-            console.error(xhr.responseText);
-            showAlert('error', 'Something went wrong!');
-          }
-        };
-
-        xhr.onerror = function () {
-          console.error('XHR upload failed');
-          showAlert('error', 'Upload failed!');
-        };
-
-        xhr.send(formData);
-      } catch (err) {
-        console.error(err);
-        showAlert('error', 'Invalid JSON or upload failed!');
-        btn.textContent = 'Create Tour';
+      if (imgRes.ok) {
+        showAlert('success', 'Tour created successfully!');
+        setTimeout(() => {
+          window.location.href = '/manage-tours';
+        }, 1500);
+      } else {
+        throw new Error('Image upload failed!');
       }
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      showAlert('error', err.message || 'Something went wrong!');
+    } finally {
+      btn.textContent = 'Create Tour';
+    }
+  });
 })();

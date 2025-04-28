@@ -42,7 +42,14 @@ router.get(
   authController.restrictTo('admin', 'lead-guide'),
   viewsController.getUpdateTour,
 );
-
+router.patch(
+  '/submit-tour-images/:id',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  tourController.uploadTourImages,
+  tourController.resizeTourImages,
+  tourController.updateTour,
+);
 router.post(
   '/submit-tour-data',
   authController.protect,

@@ -26,10 +26,48 @@ exports.uploadTourImages = upload.fields([
 ]);
 
 // 处理上传的图片并保存
+// exports.resizeTourImages = catchAsync(async (req, res, next) => {
+//   if (!req.files) return next();
+
+//   const tourId = req.params.id || req.body.id;
+//   if (!tourId) {
+//     return next(new AppError('Missing tour ID when processing images.', 400));
+//   }
+
+//   // 处理封面图
+//   if (req.files.imageCover) {
+//     const imageCoverFilename = `tour-${tourId}-${Date.now()}-cover.jpeg`;
+//     await sharp(req.files.imageCover[0].buffer)
+//       .resize(2000, 1333)
+//       .toFormat('jpeg')
+//       .jpeg({ quality: 90 })
+//       .toFile(`public/img/tours/${imageCoverFilename}`);
+//     req.body.imageCover = imageCoverFilename;
+//   }
+
+//   // 处理其他多图
+//   if (req.files.images) {
+//     req.body.images = [];
+//     await Promise.all(
+//       req.files.images.map(async (file, i) => {
+//         const filename = `tour-${tourId}-${Date.now()}-${i + 1}.jpeg`;
+//         await sharp(file.buffer)
+//           .resize(2000, 1333)
+//           .toFormat('jpeg')
+//           .jpeg({ quality: 90 })
+//           .toFile(`public/img/tours/${filename}`);
+
+//         req.body.images.push(filename);
+//       }),
+//     );
+//   }
+
+//   next();
+// });
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
-  const tourId = req.params.id || req.body.id;
+  const tourId = req.params.id;
   if (!tourId) {
     return next(new AppError('Missing tour ID when processing images.', 400));
   }
@@ -45,7 +83,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
     req.body.imageCover = imageCoverFilename;
   }
 
-  // 处理其他多图
+  // 处理多张图
   if (req.files.images) {
     req.body.images = [];
     await Promise.all(
