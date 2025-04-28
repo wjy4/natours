@@ -181,6 +181,8 @@ exports.createTour = factory.createOne(Tour);
 // });
 
 exports.updateTour = catchAsync(async (req, res, next) => {
+  console.log('Request body:', req.body);
+
   console.log('Updating Tour...');
 
   // 1. 如果有文件上传才处理图片
