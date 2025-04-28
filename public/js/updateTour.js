@@ -30,35 +30,40 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   // Update Tour JSON button
-  if (updateBtn) {
-    updateBtn.addEventListener('click', async function () {
-      const jsonData = jsonTextarea.value;
+  updateBtn.addEventListener('click', async function () {
+    const jsonData = jsonTextarea.value;
 
-      try {
-        const parsedData = JSON.parse(jsonData);
+    try {
+      const parsedData = JSON.parse(jsonData);
 
-        const res = await fetch(`/api/v1/tours/${tourId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(parsedData),
-        });
+      // 删除不该提交的字段
+      delete parsedData._id;
+      delete parsedData.id;
+      delete parsedData.__v;
+      delete parsedData.durationWeeks;
+      delete parsedData.reviews;
 
-        if (res.ok) {
-          showAlert('success', 'Tour updated successfully!');
-          setTimeout(() => {
-            window.location.href = '/manage-tours';
-          }, 1500);
-        } else {
-          showAlert('error', 'Error updating tour!');
-        }
-      } catch (err) {
-        console.error(err);
-        showAlert('error', 'Invalid JSON format!');
+      const res = await fetch(`/api/v1/tours/${tourId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(parsedData),
+      });
+
+      if (res.ok) {
+        showAlert('success', 'Tour updated successfully!');
+        setTimeout(() => {
+          window.location.href = '/manage-tours';
+        }, 1500);
+      } else {
+        showAlert('error', 'Error updating tour!');
       }
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      showAlert('error', 'Invalid JSON format!');
+    }
+  });
 
   // Upload new cover image button
   if (uploadCoverBtn) {
