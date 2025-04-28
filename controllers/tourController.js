@@ -67,14 +67,12 @@ exports.uploadTourImages = upload.fields([
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
-  const tourId = req.params.id;
-  if (!tourId) {
-    return next(new AppError('Missing tour ID when processing images.', 400));
-  }
+  // 这里不再需要 TourId
+  // const tourId = req.params.id || req.body.id;
 
   // 处理封面图
   if (req.files.imageCover) {
-    const imageCoverFilename = `tour-${tourId}-${Date.now()}-cover.jpeg`;
+    const imageCoverFilename = `tour-${Date.now()}-cover.jpeg`;
     await sharp(req.files.imageCover[0].buffer)
       .resize(2000, 1333)
       .toFormat('jpeg')
@@ -88,7 +86,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
     req.body.images = [];
     await Promise.all(
       req.files.images.map(async (file, i) => {
-        const filename = `tour-${tourId}-${Date.now()}-${i + 1}.jpeg`;
+        const filename = `tour-${Date.now()}-${i + 1}.jpeg`;
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
