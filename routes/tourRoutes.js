@@ -64,4 +64,4 @@ router
 //   tourController.resizeTourImages,
 //   tourController.createTour,
 // );
-// module.exports = router;
+module.exports = router;

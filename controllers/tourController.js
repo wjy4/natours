@@ -30,39 +30,10 @@ exports.uploadTourImages = upload.fields([
 // upload.single('image');
 // upload.array('images', 5);
 
-// exports.resizeTourImages = catchAsync(async (req, res, next) => {
-//   if (!req.files.imageCover || !req.files.images) return next();
-
-//   req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
-//   await sharp(req.files.imageCover[0].buffer)
-//     .resize(2000, 1333)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toFile(`public/img/tours/${req.body.imageCover}`);
-
-//   req.body.images = [];
-
-//   await Promise.all(
-//     req.files.images.map(async (file, i) => {
-//       const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-//       await sharp(file.buffer)
-//         .resize(2000, 1333)
-//         .toFormat('jpeg')
-//         .jpeg({ quality: 90 })
-//         .toFile(`public/img/tours/${filename}`);
-
-//       req.body.images.push(filename);
-//     }),
-//   );
-//   next();
-// });
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
   if (!req.files.imageCover || !req.files.images) return next();
 
-  // 生成一个随机唯一ID，比如时间戳
-  const uniqueId = Date.now();
-
-  req.body.imageCover = `tour-${uniqueId}-cover.jpeg`;
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
   await sharp(req.files.imageCover[0].buffer)
     .resize(2000, 1333)
     .toFormat('jpeg')
@@ -73,7 +44,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
 
   await Promise.all(
     req.files.images.map(async (file, i) => {
-      const filename = `tour-${uniqueId}-${i + 1}.jpeg`;
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
       await sharp(file.buffer)
         .resize(2000, 1333)
         .toFormat('jpeg')
@@ -83,9 +54,38 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
       req.body.images.push(filename);
     }),
   );
-
   next();
 });
+// exports.resizeTourImages = catchAsync(async (req, res, next) => {
+//   if (!req.files.imageCover || !req.files.images) return next();
+
+//   // 生成一个随机唯一ID，比如时间戳
+//   const uniqueId = Date.now();
+
+//   req.body.imageCover = `tour-${uniqueId}-cover.jpeg`;
+//   await sharp(req.files.imageCover[0].buffer)
+//     .resize(2000, 1333)
+//     .toFormat('jpeg')
+//     .jpeg({ quality: 90 })
+//     .toFile(`public/img/tours/${req.body.imageCover}`);
+
+//   req.body.images = [];
+
+//   await Promise.all(
+//     req.files.images.map(async (file, i) => {
+//       const filename = `tour-${uniqueId}-${i + 1}.jpeg`;
+//       await sharp(file.buffer)
+//         .resize(2000, 1333)
+//         .toFormat('jpeg')
+//         .jpeg({ quality: 90 })
+//         .toFile(`public/img/tours/${filename}`);
+
+//       req.body.images.push(filename);
+//     }),
+//   );
+
+//   next();
+// });
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
