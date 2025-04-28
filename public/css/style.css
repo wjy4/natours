@@ -1409,3 +1409,101 @@ body {
 .no-bookings-message .heading-secondary {
   margin-bottom: 2rem;
 }
+
+/* ------------------------------------------ */
+/* 📱 (Mobile Responsive Design) */
+/* ------------------------------------------ */
+
+/* 平板 (最大宽度 900px) */
+@media only screen and (max-width: 56.25em) {
+  .main {
+    padding: 6rem 3rem;
+  }
+
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 4rem;
+  }
+
+  .heading-primary {
+    font-size: 4rem;
+    width: 90%;
+  }
+
+  .btn,
+  .btn-small {
+    padding: 1.2rem 2rem;
+    font-size: 1.4rem;
+  }
+}
+
+/* 手机 (最大宽度 600px) */
+@media only screen and (max-width: 37.5em) {
+  .main {
+    padding: 4rem 2rem;
+  }
+
+  .card-container {
+    grid-template-columns: 1fr;
+    grid-gap: 3rem;
+  }
+
+  .card__details {
+    grid-template-columns: 1fr;
+  }
+
+  .card__footer {
+    grid-template-columns: 1fr;
+    grid-row-gap: 1.5rem;
+    text-align: center;
+  }
+
+  .heading-primary {
+    font-size: 3rem;
+    width: 100%;
+  }
+
+  .heading-tertirary {
+    font-size: 2.2rem;
+    text-align: center;
+    position: static;
+    margin: 2rem 0;
+  }
+
+  .btn,
+  .btn-small {
+    padding: 1rem 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .no-bookings-message p {
+    font-size: 1.4rem;
+  }
+
+  .footer {
+    padding: 4rem 2rem;
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}
+
+/* 超小屏手机 (最大宽度 400px) */
+@media only screen and (max-width: 25em) {
+  .main {
+    padding: 2rem 1rem;
+  }
+
+  .btn,
+  .btn-small {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .heading-primary {
+    font-size: 2.5rem;
+  }
+
+  .no-bookings-message p {
+    font-size: 1.3rem;
+  }
+}
