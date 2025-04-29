@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
     if (path.includes('manage-users')) return 'users';
     if (path.includes('manage-reviews')) return 'reviews';
-    if (path.includes('manage-bookings')) return 'bookings';
+    if (path.includes('manage-bookings')) return 'booking';
     if (path.includes('manage-tours')) return 'tours';
     return null;
   }
