@@ -7,7 +7,7 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
-// 配置 multer
+// ============ Multer 文件上传配置 ============
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -25,52 +25,11 @@ exports.uploadTourImages = upload.fields([
   { name: 'images', maxCount: 3 },
 ]);
 
-// 处理上传的图片并保存
-// exports.resizeTourImages = catchAsync(async (req, res, next) => {
-//   if (!req.files) return next();
-
-//   const tourId = req.params.id || req.body.id;
-//   if (!tourId) {
-//     return next(new AppError('Missing tour ID when processing images.', 400));
-//   }
-
-//   // 处理封面图
-//   if (req.files.imageCover) {
-//     const imageCoverFilename = `tour-${tourId}-${Date.now()}-cover.jpeg`;
-//     await sharp(req.files.imageCover[0].buffer)
-//       .resize(2000, 1333)
-//       .toFormat('jpeg')
-//       .jpeg({ quality: 90 })
-//       .toFile(`public/img/tours/${imageCoverFilename}`);
-//     req.body.imageCover = imageCoverFilename;
-//   }
-
-//   // 处理其他多图
-//   if (req.files.images) {
-//     req.body.images = [];
-//     await Promise.all(
-//       req.files.images.map(async (file, i) => {
-//         const filename = `tour-${tourId}-${Date.now()}-${i + 1}.jpeg`;
-//         await sharp(file.buffer)
-//           .resize(2000, 1333)
-//           .toFormat('jpeg')
-//           .jpeg({ quality: 90 })
-//           .toFile(`public/img/tours/${filename}`);
-
-//         req.body.images.push(filename);
-//       }),
-//     );
-//   }
-
-//   next();
-// });
+// ============ 图像压缩处理（使用当前时间戳命名） ============
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
-  // 这里不再需要 TourId
-  // const tourId = req.params.id || req.body.id;
-
-  // 处理封面图
+  // Cover image
   if (req.files.imageCover) {
     const imageCoverFilename = `tour-${Date.now()}-cover.jpeg`;
     await sharp(req.files.imageCover[0].buffer)
@@ -81,7 +40,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
     req.body.imageCover = imageCoverFilename;
   }
 
-  // 处理多张图
+  // Gallery images
   if (req.files.images) {
     req.body.images = [];
     await Promise.all(
@@ -101,7 +60,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
   next();
 });
 
-// 解析前端传来的 startLocation 和 locations
+// ============ JSON 字段解析 ============
 exports.parseTourFields = (req, res, next) => {
   try {
     if (typeof req.body.startLocation === 'string') {
@@ -119,7 +78,7 @@ exports.parseTourFields = (req, res, next) => {
   }
 };
 
-// 其他基本路由逻辑
+// ============ Tour 逻辑路由 ============
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
@@ -131,42 +90,19 @@ exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.createTour = factory.createOne(Tour);
 
-// exports.updateTour = catchAsync(async (req, res, next) => {
-//   console.log('Request body:', req.body);
-
-//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-
-//   if (!updatedTour) {
-//     return next(new AppError('No tour found with that ID.', 404));
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       data: updatedTour,
-//     },
-//   });
-// });
-
+// ============ 更新 Tour ============
 exports.updateTour = catchAsync(async (req, res, next) => {
   console.log('Incoming Request body:', JSON.stringify(req.body, null, 2));
 
-  // 修正 guides 字段
+  // 🛠 清理并修正 guides
   if (req.body.guides && Array.isArray(req.body.guides)) {
     req.body.guides = req.body.guides
       .map((guide) => {
-        if (typeof guide === 'object' && guide._id) {
-          return guide._id; // 拿到 _id
-        }
-        if (typeof guide === 'string') {
-          return guide; // 已经是ID
-        }
-        return null; // 如果guide是错误的，过滤掉
+        if (typeof guide === 'object' && guide._id) return guide._id;
+        if (typeof guide === 'string') return guide;
+        return null;
       })
-      .filter(Boolean); // 过滤掉空值
+      .filter(Boolean);
   }
 
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
@@ -179,7 +115,6 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   }
 
   console.log('✅ Tour updated successfully!');
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -190,6 +125,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 
 exports.deleteTour = factory.deleteOne(Tour);
 
+// ============ 数据分析路由 ============
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     { $match: { ratingsAverage: { $gte: 4.5 } } },
@@ -214,7 +150,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
 });
 
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
-  const year = req.params.year * 1;
+  const year = +req.params.year;
 
   const plan = await Tour.aggregate([
     { $unwind: '$startDates' },
@@ -246,12 +182,10 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
+// ============ 地理功能：范围查询 + 距离计算 ============
 exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
   const [lat, lng] = latlng.split(',');
-
-  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
-
   if (!lat || !lng) {
     return next(
       new AppError(
@@ -261,9 +195,11 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     );
   }
 
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
   const tours = await Tour.find({
     startLocation: {
-      $geoWithin: { $centerSphere: [[lng * 1, lat * 1], radius] },
+      $geoWithin: { $centerSphere: [[+lng, +lat], radius] },
     },
   });
 
@@ -277,9 +213,6 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 exports.getDistances = catchAsync(async (req, res, next) => {
   const { latlng, unit } = req.params;
   const [lat, lng] = latlng.split(',');
-
-  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
-
   if (!lat || !lng) {
     return next(
       new AppError(
@@ -289,13 +222,12 @@ exports.getDistances = catchAsync(async (req, res, next) => {
     );
   }
 
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
   const distances = await Tour.aggregate([
     {
       $geoNear: {
-        near: {
-          type: 'Point',
-          coordinates: [lng * 1, lat * 1],
-        },
+        near: { type: 'Point', coordinates: [+lng, +lat] },
         distanceField: 'distance',
         distanceMultiplier: multiplier,
       },

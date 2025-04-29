@@ -194,7 +194,7 @@ const getCreateTour = (req, res) => {
 const getUpdateTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id).populate({
     path: 'guides',
-    select: 'name email role photo', // 指定需要返回的字段（一定包括 _id）
+    select: '_id', // 指定需要返回的字段（一定包括 _id）
   });
 
   if (!tour) {
