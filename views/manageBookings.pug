@@ -13,10 +13,10 @@ block content
             .form-info
               p
                 strong Tour:
-                |  #{b.tour?.name || 'Unknown Tour'}
+                |  #{b.tour && b.tour.name || 'Unknown Tour'}
               p
                 strong User:
-                |  #{b.user?.name || 'Unknown User'} (#{b.user?.email || 'N/A'})
+                |  #{b.user && b.user.name || 'Unknown User'} (#{b.user && b.user.email || 'N/A'})
               p
                 strong Price:
                 |  £#{b.price}

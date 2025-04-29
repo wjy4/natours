@@ -19,10 +19,10 @@ block content
                 |  #{r.rating}
               p
                 strong User:
-                |  #{r.user?.name || 'Unknown'}
+                |  #{r.user && r.user.name || 'Unknown'}
               p
                 strong Tour:
-                |  #{r.tour?.name || 'Unknown'}
+                |  #{r.tour && r.tour.name || 'Unknown'}
             .form-actions
               button.btn.btn--red(data-id=r._id) Delete
 
