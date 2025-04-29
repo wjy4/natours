@@ -2036,3 +2036,45 @@ html {
   border-radius: 10px;
   display: inline-block;
 }
+.section-admin {
+  padding: 4rem 6rem;
+  background-color: #fff;
+}
+
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.form-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 2rem;
+}
+
+.form-info {
+  flex: 1;
+}
+
+.form-actions {
+  margin-left: 2rem;
+}
+
+.btn--white {
+  background-color: white;
+  border: 1px solid #ccc;
+  color: #444;
+}

@@ -1,21 +1,23 @@
 extends base
 
 block content
-  .section-bookings
+  .section-admin
+    a.btn.btn--white(href='/account') ← Back to Account
+
     h2.heading-secondary.u-margin-bottom-medium Manage Bookings
 
-    table.table
-      thead
-        tr
-          th Tour
-          th User
-          th Price
-          th Actions
-      tbody
-        each b in bookings
-          tr
-            td #{b.tour.name}
-            td #{b.user.name} (#{b.user.email})
-            td £#{b.price}
-            td
-              button.btn.btn--red(data-id=b._id) Delete
+    .form-layout
+      each b in bookings
+        .form-card
+          .form-info
+            p
+              strong Tour:
+              |  #{b.tour.name}
+            p
+              strong User:
+              |  #{b.user.name} (#{b.user.email})
+            p
+              strong Price:
+              |  £#{b.price}
+          .form-actions
+            button.btn.btn--red(data-id=b._id) Delete

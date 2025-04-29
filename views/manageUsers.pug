@@ -1,24 +1,25 @@
 extends base
 
 block content
-  .section-users
+  .section-admin
+    a.btn.btn--white(href='/account') ← Back to Account
+
     h2.heading-secondary.u-margin-bottom-medium Manage Users
 
-    table.table
-      thead
-        tr
-          th Avatar
-          th Name
-          th Email
-          th Role
-          th Actions
-      tbody
-        each user in users
-          tr
-            td 
-              img(src=`/img/users/${user.photo}` width="40")
-            td #{user.name}
-            td #{user.email}
-            td #{user.role}
-            td
-              button.btn.btn--red(data-id=user._id) Delete
+    .form-layout
+      each user in users
+        .form-card
+          img.form-avatar(src=`/img/users/${user.photo}`, alt=user.name)
+          .form-info
+            p
+              strong Name:
+              |  #{user.name}
+            p
+              strong Email:
+              |  #{user.email}
+            p
+              strong Role:
+              |  #{user.role}
+          .form-actions
+            button.btn.btn--red(data-id=user._id) Delete
+

@@ -1,23 +1,26 @@
 extends base
 
 block content
-  .section-reviews
+  .section-admin
+    a.btn.btn--white(href='/account') ← Back to Account
+
     h2.heading-secondary.u-margin-bottom-medium Manage Reviews
 
-    table.table
-      thead
-        tr
-          th Review
-          th Rating
-          th User
-          th Tour
-          th Actions
-      tbody
-        each r in reviews
-          tr
-            td #{r.review}
-            td #{r.rating}
-            td #{r.user.name}
-            td #{r.tour.name}
-            td
-              button.btn.btn--red(data-id=r._id) Delete
+    .form-layout
+      each r in reviews
+        .form-card
+          .form-info
+            p
+              strong Review:
+              |  #{r.review}
+            p
+              strong Rating:
+              |  #{r.rating}
+            p
+              strong User:
+              |  #{r.user.name}
+            p
+              strong Tour:
+              |  #{r.tour.name}
+          .form-actions
+            button.btn.btn--red(data-id=r._id) Delete
