@@ -1,9 +1,9 @@
 extends base
+include _reviewCard
 
 block append head
-  script(src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js')
-  link(href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet')
-  script(src='https://js.stripe.com/v3')
+  script(src='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js')
+  link(href='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet')
 
 mixin overviewBox(label, text, icon)
   .overview-box__detail
@@ -36,11 +36,11 @@ block content
       div
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Quick facts
-          - const date = tour.startDates?.[0] ? new Date(tour.startDates[0]).toLocaleString('en-uk', { month: 'long', year: 'numeric' }) : 'Coming soon'
+          - const date = tour.startDates[0].toLocaleString('en-us', { month: 'long', year: 'numeric' })
           +overviewBox('Next date', date, 'calendar')
           +overviewBox('Difficulty', tour.difficulty, 'trending-up')
           +overviewBox('Participants', tour.maxGroupSize + ' people', 'user')
-          +overviewBox('Rating', tour.ratingsAverage + ' /5', 'star')
+          +overviewBox('Rating', tour.ratingsAverage + ' / 5', 'star')
 
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Your tour guides
@@ -55,8 +55,8 @@ block content
 
     .description-box
       h2.heading-secondary.ma-bt-lg About #{tour.name} tour
-      - const paragraphs = tour.description.split('\n');
-      each p in paragraphs
+      - const parapraphs = tour.description.split('\n')
+      each p in parapraphs
         p.description__text= p
 
   section.section-pictures
@@ -71,21 +71,15 @@ block content
   section.section-map
     #map(data-locations=JSON.stringify(tour.locations))
 
-  // ⭐ Reviews Section
+  // ⭐️ 评论区（使用你的 mixin）
   section.section-reviews
-    if tour.reviews && tour.reviews.length
-      h2.heading-secondary.ma-bt-md Reviews
-      .reviews
+    h2.heading-secondary.ma-bt-md Reviews
+    .reviews
+      if tour.reviews && tour.reviews.length
         each review in tour.reviews
-          .review
-            .review__user
-              img.review__user-photo(src='/img/users/' + review.user.photo, alt=review.user.name)
-              .review__user-info
-                h4.review__user-name= review.user.name
-                p.review__rating Rating: #{review.rating} ⭐
-            p.review__text= review.review
-    else
-      p.card__text No reviews yet. Be the first to leave one!
+          +reviewCard(review)
+      else
+        p.card__text No reviews yet. Be the first to leave one!
 
   section.section-cta
     .cta
@@ -99,4 +93,4 @@ block content
         if user
           button.btn.btn--green.span-all-rows#book-tour(data-tour-id=tour.id) Book tour now!
         else
-          a.button.btn.btn--green.span-all-rows(href='/login') Log in to book tour
+          a.btn.btn--green.span-all-rows(href='/login') Log in to book tour
