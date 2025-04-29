@@ -2,6 +2,8 @@
 /* eslint-disable */
 document.addEventListener('DOMContentLoaded', function () {
   const modal = document.getElementById('reviewModal');
+  if (!modal) return; // ✅ 如果没有 modal，直接退出
+
   const modalForm = document.getElementById('modal-review-form');
   const reviewText = document.getElementById('modal-review-text');
   const reviewTourId = document.getElementById('modal-tour-id');
@@ -11,19 +13,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let selectedRating = 0;
 
-  // Open modal
+  // 绑定 modal 打开事件
   document.querySelectorAll('.open-review-modal').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const tourId = btn.dataset.tourId;
-      const tourName = btn.dataset.tourName;
-
-      reviewTourId.value = tourId;
-      modalTourName.textContent = tourName;
+      reviewTourId.value = btn.dataset.tourId;
+      modalTourName.textContent = btn.dataset.tourName;
       modal.classList.remove('hidden');
     });
   });
 
-  // Close modal
+  // 关闭
   closeModalBtn.addEventListener('click', () => {
     modal.classList.add('hidden');
     reviewText.value = '';
@@ -31,36 +30,32 @@ document.addEventListener('DOMContentLoaded', function () {
     updateStarUI(0);
   });
 
-  // Handle star rating click/hover
+  // 星级 UI
   starIcons.forEach((star) => {
-    const value = +star.dataset.value;
-
-    star.addEventListener('mouseover', () => updateStarUI(value));
+    const val = +star.dataset.value;
+    star.addEventListener('mouseover', () => updateStarUI(val));
     star.addEventListener('mouseout', () => updateStarUI(selectedRating));
     star.addEventListener('click', () => {
-      selectedRating = value;
-      updateStarUI(value);
+      selectedRating = val;
+      updateStarUI(val);
     });
   });
 
   function updateStarUI(val) {
     starIcons.forEach((s) => {
-      const currentVal = +s.dataset.value;
-      s.classList.toggle('active', currentVal <= val);
-      s.classList.toggle('inactive', currentVal > val);
+      const v = +s.dataset.value;
+      s.classList.toggle('active', v <= val);
+      s.classList.toggle('inactive', v > val);
     });
   }
 
-  // Submit review
   modalForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const review = reviewText.value.trim();
+    const review = reviewText.value;
     const rating = selectedRating;
 
-    if (!review || !rating) {
-      return showAlert('error', 'Please enter review and select rating');
-    }
+    if (!review || !rating)
+      return showAlert('error', 'Please enter review and rating');
 
     try {
       const res = await fetch('/api/v1/reviews', {
@@ -79,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     } catch (err) {
       console.error(err);
-      showAlert('error', '❌ Failed to submit review');
+      showAlert('error', '❌ You already reviewed this tour!');
     }
   });
 });

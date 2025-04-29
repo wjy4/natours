@@ -1,6 +1,5 @@
 extends base
 
-
 block content
   main.main
     if noBookings
@@ -65,29 +64,28 @@ block content
                   data-tour-name=tour.name
                 ) Leave a review
 
-// Review Modal (place once at the bottom)
-div#reviewModal.modal.hidden
-  .modal__overlay
-  .modal__window
-    h2.modal__title Leave a review for 
-      span#modal-tour-name
-    form#modal-review-form.form-review(method='POST')
-      input(type='hidden', name='tour', id='modal-tour-id')
-      .form__group
-        label(for='modal-review-text') Your review
-        input.form__input(
-          type='text',
-          name='review',
-          id='modal-review-text',
-          placeholder='Write something...'
-        )
-      .form__group
-        label Rating
-        .rating-stars
-          each star in [1,2,3,4,5]
-            svg.star(data-value=star)
-              use(xlink:href='/img/icons.svg#icon-star')
-      .modal__buttons
-        button.btn.btn--green(type='submit') Submit
-        button.btn.btn--gray(type='button', id='close-review-modal') Cancel
-
+  // ✅ Modal 必须写在 block content 内
+  #reviewModal.modal.hidden
+    .modal__overlay
+    .modal__window
+      h2.modal__title Leave a review for 
+        span#modal-tour-name
+      form#modal-review-form.form-review(method='POST')
+        input(type='hidden', name='tour', id='modal-tour-id')
+        .form__group
+          label(for='modal-review-text') Your review
+          input.form__input(
+            type='text',
+            name='review',
+            id='modal-review-text',
+            placeholder='Write something...'
+          )
+        .form__group
+          label Rating
+          .rating-stars
+            each star in [1,2,3,4,5]
+              svg.star(data-value=star)
+                use(xlink:href='/img/icons.svg#icon-star')
+        .modal__buttons
+          button.btn.btn--green(type='submit') Submit
+          button.btn.btn--gray(type='button', id='close-review-modal') Cancel
