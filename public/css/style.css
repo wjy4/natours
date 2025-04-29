@@ -1948,3 +1948,58 @@ html {
   align-items: center;
   justify-content: flex-start;
 }
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 2rem;
+}
+
+.review-card {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  align-items: flex-start;
+}
+
+.review-card__left {
+  flex-shrink: 0;
+}
+
+.review-card__image {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.review-card__right {
+  flex-grow: 1;
+}
+
+.review-card__tour {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.review-card__rating {
+  color: #f7b731;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-card__text {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.review-card__actions button,
+.review-card__actions form {
+  display: inline-block;
+  margin-right: 1rem;
+}

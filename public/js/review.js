@@ -13,43 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let selectedRating = 0;
 
-  // 打开 modal 的按钮（包含新建 + 编辑）
+  // 打开 Review Modal（编辑或新增）
   document.querySelectorAll('.open-review-modal').forEach((btn) => {
     btn.addEventListener('click', () => {
       const isEdit = !!btn.dataset.reviewId;
 
       reviewTourId.value = btn.dataset.tourId;
       modalTourName.textContent = btn.dataset.tourName;
+      modal.dataset.reviewId = isEdit ? btn.dataset.reviewId : '';
 
-      if (isEdit) {
-        modal.dataset.reviewId = btn.dataset.reviewId;
-        reviewText.value = btn.dataset.reviewText || '';
-        selectedRating = parseInt(btn.dataset.reviewRating) || 0;
-        updateStarUI(selectedRating);
-      } else {
-        modal.dataset.reviewId = '';
-        reviewText.value = '';
-        selectedRating = 0;
-        updateStarUI(0);
-      }
+      reviewText.value = btn.dataset.reviewText || '';
+      selectedRating = parseInt(btn.dataset.reviewRating) || 0;
+      updateStarUI(selectedRating);
 
       modal.classList.remove('hidden');
     });
   });
 
-  // 关闭 modal
-  closeModalBtn.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    reviewText.value = '';
-    selectedRating = 0;
-    updateStarUI(0);
-    modal.dataset.reviewId = '';
-  });
-
-  // 星级点击 + hover 效果
+  // 星星 UI
   starIcons.forEach((star) => {
     const val = +star.dataset.value;
-
     star.addEventListener('mouseover', () => updateStarUI(val));
     star.addEventListener('mouseout', () => updateStarUI(selectedRating));
     star.addEventListener('click', () => {
@@ -66,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 提交 Review 创建 / 更新
+  // 提交 Review（创建或更新）
   modalForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const review = reviewText.value.trim();
@@ -96,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (res.ok && data.status === 'success') {
         showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
-        setTimeout(() => location.reload(), 1500);
+        setTimeout(() => location.reload(), 1000);
       } else {
         showAlert('error', data.message || 'Something went wrong!');
       }
@@ -104,5 +87,37 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(err);
       showAlert('error', 'Unexpected error occurred!');
     }
+  });
+
+  // 删除 Review
+  document.querySelectorAll('.delete-review-button').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const confirmed = confirm('Are you sure you want to delete this review?');
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`/api/v1/reviews/${btn.dataset.reviewId}`, {
+          method: 'DELETE',
+        });
+
+        if (res.ok) {
+          showAlert('success', 'Review deleted!');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showAlert('error', 'Failed to delete review');
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert('error', 'Something went wrong');
+      }
+    });
+  });
+
+  closeModalBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    reviewText.value = '';
+    selectedRating = 0;
+    updateStarUI(0);
+    modal.dataset.reviewId = '';
   });
 });

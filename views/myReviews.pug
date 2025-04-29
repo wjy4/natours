@@ -21,11 +21,39 @@ block content
               .review-card__text= review.review
               .review-card__actions
                 button.btn.btn--blue--small.open-review-modal(
+                  type='button',
                   data-review-id=review._id,
                   data-review-text=review.review,
                   data-review-rating=review.rating,
                   data-tour-id=review.tour._id,
                   data-tour-name=review.tour.name
                 ) Edit
-                form(method='POST', action=`/delete-review/${review._id}?_method=DELETE`)
-                  button.btn.btn--red--small(type='submit') Delete
+                button.btn.btn--red--small.delete-review-button(
+                  type='button',
+                  data-review-id=review._id
+                ) Delete
+
+  #reviewModal.modal.hidden
+    .modal__overlay
+    .modal__window
+      h2.modal__title Leave a review for 
+        span#modal-tour-name
+      form#modal-review-form.form-review(method='POST')
+        input(type='hidden', name='tour', id='modal-tour-id')
+        .form__group
+          label(for='modal-review-text') Your review
+          input.form__input(
+            type='text',
+            name='review',
+            id='modal-review-text',
+            placeholder='Write something...'
+          )
+        .form__group
+          label Rating
+          .rating-stars
+            each star in [1,2,3,4,5]
+              svg.star(data-value=star)
+                use(xlink:href='/img/icons.svg#icon-star')
+        .modal__buttons
+          button.btn.btn--green(type='submit') Submit
+          button.btn.btn--gray(type='button', id='close-review-modal') Cancel
