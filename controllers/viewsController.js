@@ -144,6 +144,7 @@ const getMyTours = catchAsync(async (req, res) => {
     title: noBookings ? 'Recommended Tours' : 'My Tours',
     tours,
     noBookings,
+    showReview: !noBookings, // ✅ 只有真正预订的用户才能评论
   });
 });
 

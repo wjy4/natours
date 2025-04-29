@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', function () {
           method: 'DELETE',
         });
         if (res.status === 204) {
-          showAlert('Tour deleted successfully!');
-          location.reload();
+          showAlert('success', '✅ Tour deleted successfully!');
+          setTimeout(() => location.reload(), 1500);
         } else {
-          showAlert('Error deleting tour!');
+          showAlert('error', '❌ Error deleting tour!');
         }
       } catch (err) {
         console.error(err);
-        showAlert('Error deleting tour!');
+        showAlert('error', '❌ Error deleting tour!');
       }
     });
   });

@@ -3,6 +3,7 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const viewsController = require('../controllers/viewsController'); // 确保路径正确
 const tourController = require('../controllers/tourController');
+const reviewController = require('../controllers/reviewController');
 
 const router = express.Router();
 
@@ -21,6 +22,11 @@ router.post(
   '/submit-user-data',
   authController.protect,
   viewsController.updateUserData,
+);
+router.post(
+  '/reviews',
+  authController.protect, // 确保登录
+  reviewController.createReview,
 );
 
 router.get(
