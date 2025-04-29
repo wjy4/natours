@@ -181,7 +181,7 @@ if (generateBtn && jsonTextarea) {
       maxGroupSize: 10,
       difficulty: 'easy',
       price: 500,
-      priceDiscount: 450,
+      // priceDiscount: 450,
       summary: 'Short summary of the tour',
       description: 'Detailed description of the tour',
       startDates: startDates,

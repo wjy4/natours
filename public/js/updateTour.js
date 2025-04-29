@@ -18,11 +18,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     const data = await res.json();
 
     if (data.status === 'success') {
-      // 转换 guides 为 ID 数组，只留下 _id 字段
       const cleanData = { ...data.data.data };
+
+      // 确保 guides 是 ID 数组
       if (Array.isArray(cleanData.guides)) {
         cleanData.guides = cleanData.guides.map((g) => g._id || g);
       }
+
       jsonTextarea.value = JSON.stringify(cleanData, null, 2);
     }
   } catch (err) {
@@ -34,18 +36,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
       const parsedData = JSON.parse(jsonTextarea.value);
 
-      // 清除敏感 & 不必要字段
-      ['_id', 'id', '__v', 'durationWeeks', 'reviews'].forEach(
+      // 🧹 删除不该提交的字段
+      ['_id', 'id', '__v', 'durationWeeks', 'reviews', 'priceDiscount'].forEach(
         (key) => delete parsedData[key],
       );
 
-      // 确保 guides 是 ID 数组
+      // 确保 guides 是 ID 字符串数组
       if (Array.isArray(parsedData.guides)) {
         parsedData.guides = parsedData.guides.map((g) =>
           typeof g === 'object' && g._id ? g._id : g,
         );
       }
 
+      // 发起 PATCH 请求
       const res = await fetch(`/api/v1/tours/${tourId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -65,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
-  // 上传封面图
+  // 上传封面图按钮
   if (uploadCoverBtn) {
     uploadCoverBtn.addEventListener('click', async function () {
       const file = imageCoverInput.files[0];
