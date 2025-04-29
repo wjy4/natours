@@ -14,15 +14,17 @@ block content
                     +navItem('#', 'Settings','settings',true)
                     +navItem('/my-tours', 'My booking','briefcase',true)
                     +navItem('/my-reviews', 'My reviews','star',true)
-                    +navItem('#', 'Billing','credit-card',true)
+                    +navItem('/billing', 'Billing','credit-card',true)
                 - if (user.role === 'admin')      
                     .admin-nav
                         h5.admin-nav__heading Admin
                         ul.side-nav
                             +navItem('/manage-tours', 'Manage tours','map',user.role === 'admin' || user.role === 'lead-guide')
-                            +navItem('#', 'Manage users','users',true)
-                            +navItem('#', 'Manage reviews','star',true)
-                            +navItem('#', 'Manage bookings','briefcase',true)
+                            +navItem('/manage-users', 'Manage users','users',activePath === '/manage-users')
+                            +navItem('/manage-reviews', 'Manage reviews','star',activePath === '/manage-reviews')
+                            +navItem('/manage-bookings', 'Manage bookings','briefcase',activePath === '/manage-bookings')
+
+
 
             .user-view__content
                 .user-view__form-container

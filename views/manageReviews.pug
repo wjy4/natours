@@ -1,0 +1,23 @@
+extends base
+
+block content
+  .section-reviews
+    h2.heading-secondary.u-margin-bottom-medium Manage Reviews
+
+    table.table
+      thead
+        tr
+          th Review
+          th Rating
+          th User
+          th Tour
+          th Actions
+      tbody
+        each r in reviews
+          tr
+            td #{r.review}
+            td #{r.rating}
+            td #{r.user.name}
+            td #{r.tour.name}
+            td
+              button.btn.btn--red(data-id=r._id) Delete

@@ -1,0 +1,21 @@
+extends base
+
+block content
+  .section-bookings
+    h2.heading-secondary.u-margin-bottom-medium Manage Bookings
+
+    table.table
+      thead
+        tr
+          th Tour
+          th User
+          th Price
+          th Actions
+      tbody
+        each b in bookings
+          tr
+            td #{b.tour.name}
+            td #{b.user.name} (#{b.user.email})
+            td £#{b.price}
+            td
+              button.btn.btn--red(data-id=b._id) Delete

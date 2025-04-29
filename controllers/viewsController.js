@@ -291,6 +291,34 @@ const getMyReviews = catchAsync(async (req, res, next) => {
   });
 });
 
+const getManageUsers = catchAsync(async (req, res) => {
+  const users = await User.find().select('name email role photo');
+  res.status(200).render('manageUsers', {
+    title: 'Manage Users',
+    users,
+  });
+});
+
+const getManageReviews = catchAsync(async (req, res) => {
+  const reviews = await Review.find()
+    .populate('user', 'name')
+    .populate('tour', 'name');
+  res.status(200).render('manageReviews', {
+    title: 'Manage Reviews',
+    reviews,
+  });
+});
+
+const getManageBookings = catchAsync(async (req, res) => {
+  const bookings = await Booking.find()
+    .populate('user', 'name email')
+    .populate('tour', 'name');
+  res.status(200).render('manageBookings', {
+    title: 'Manage Bookings',
+    bookings,
+  });
+});
+
 module.exports = {
   alerts,
   getOverview,
@@ -304,4 +332,7 @@ module.exports = {
   getCreateTour,
   getUpdateTour,
   getMyReviews,
+  getManageUsers,
+  getManageReviews,
+  getManageBookings,
 };
