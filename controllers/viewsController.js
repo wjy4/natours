@@ -270,6 +270,19 @@ const getUpdateTour = catchAsync(async (req, res, next) => {
   });
 });
 
+const getMyReviews = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find({ user: req.user.id }).populate({
+    path: 'tour',
+    select: 'name slug imageCover',
+  });
+
+  res.status(200).render('myReviews', {
+    title: 'My Reviews',
+    reviews,
+    path: '/my-reviews',
+  });
+});
+
 module.exports = {
   alerts,
   getOverview,
@@ -282,4 +295,5 @@ module.exports = {
   getManageTours,
   getCreateTour,
   getUpdateTour,
+  getMyReviews,
 };

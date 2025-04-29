@@ -1,0 +1,31 @@
+extends base
+
+block content
+  .section-reviews
+    .u-center-text.u-margin-bottom-big
+      h2.heading-secondary My Reviews
+
+    if reviews.length === 0
+      .u-center-text
+        p.text You haven't reviewed any tours yet.
+    else
+      .review-list
+        each review in reviews
+          .review-card
+            .review-card__left
+              img.review-card__image(src=`/img/tours/${review.tour.imageCover}`, alt=review.tour.name)
+            .review-card__right
+              h3.review-card__tour
+                a(href=`/tour/${review.tour.slug}`)= review.tour.name
+              .review-card__rating ★ #{review.rating} / 5
+              .review-card__text= review.review
+              .review-card__actions
+                button.btn.btn--blue--small.open-review-modal(
+                  data-review-id=review._id,
+                  data-review-text=review.review,
+                  data-review-rating=review.rating,
+                  data-tour-id=review.tour._id,
+                  data-tour-name=review.tour.name
+                ) Edit
+                form(method='POST', action=`/delete-review/${review._id}?_method=DELETE`)
+                  button.btn.btn--red--small(type='submit') Delete

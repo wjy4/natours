@@ -59,4 +59,13 @@ router.post(
   tourController.createTour,
 );
 
+// viewRoutes.js
+router.get('/my-reviews', authController.protect, viewsController.getMyReviews);
+// routes/viewRoutes.js
+router.delete(
+  '/delete-review/:id',
+  authController.protect,
+  reviewController.deleteReview,
+);
+
 module.exports = router;

@@ -1,8 +1,8 @@
 // public/js/reviews.js
 /* eslint-disable */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('reviewModal');
-  if (!modal) return; // ✅ 如果没有 modal，直接退出
+  if (!modal) return;
 
   const modalForm = document.getElementById('modal-review-form');
   const reviewText = document.getElementById('modal-review-text');
@@ -13,26 +13,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let selectedRating = 0;
 
-  // 绑定 modal 打开事件
+  // 打开 modal 的按钮（包含新建 + 编辑）
   document.querySelectorAll('.open-review-modal').forEach((btn) => {
     btn.addEventListener('click', () => {
+      const isEdit = !!btn.dataset.reviewId;
+
       reviewTourId.value = btn.dataset.tourId;
       modalTourName.textContent = btn.dataset.tourName;
+
+      if (isEdit) {
+        modal.dataset.reviewId = btn.dataset.reviewId;
+        reviewText.value = btn.dataset.reviewText || '';
+        selectedRating = parseInt(btn.dataset.reviewRating) || 0;
+        updateStarUI(selectedRating);
+      } else {
+        modal.dataset.reviewId = '';
+        reviewText.value = '';
+        selectedRating = 0;
+        updateStarUI(0);
+      }
+
       modal.classList.remove('hidden');
     });
   });
 
-  // 关闭
+  // 关闭 modal
   closeModalBtn.addEventListener('click', () => {
     modal.classList.add('hidden');
     reviewText.value = '';
     selectedRating = 0;
     updateStarUI(0);
+    modal.dataset.reviewId = '';
   });
 
-  // 星级 UI
+  // 星级点击 + hover 效果
   starIcons.forEach((star) => {
     const val = +star.dataset.value;
+
     star.addEventListener('mouseover', () => updateStarUI(val));
     star.addEventListener('mouseout', () => updateStarUI(selectedRating));
     star.addEventListener('click', () => {
@@ -49,32 +66,43 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // 提交 Review 创建 / 更新
   modalForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const review = reviewText.value;
+    const review = reviewText.value.trim();
     const rating = selectedRating;
 
     if (!review || !rating)
-      return showAlert('error', 'Please enter review and rating');
+      return showAlert('error', '❌ Please enter review and rating');
+
+    const reviewId = modal.dataset.reviewId;
+    const payload = {
+      tour: reviewTourId.value,
+      review,
+      rating,
+    };
 
     try {
-      const res = await fetch('/api/v1/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tour: reviewTourId.value, review, rating }),
-      });
+      const res = await fetch(
+        reviewId ? `/api/v1/reviews/${reviewId}` : '/api/v1/reviews',
+        {
+          method: reviewId ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        },
+      );
 
       const data = await res.json();
 
       if (res.ok && data.status === 'success') {
-        showAlert('success', '✅ Review submitted!');
+        showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
         setTimeout(() => location.reload(), 1500);
       } else {
-        showAlert('error', data.message || '❌ Error submitting review');
+        showAlert('error', data.message || 'Something went wrong!');
       }
     } catch (err) {
       console.error(err);
-      showAlert('error', '❌ You already reviewed this tour!');
+      showAlert('error', 'Unexpected error occurred!');
     }
   });
 });
