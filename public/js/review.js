@@ -83,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
         setTimeout(() => location.reload(), 1000);
       } else {
-        console.error(err.message);
+        console.error('API Error:', data.message || 'Unknown error');
         showAlert('error', data.message || 'Something went wrong!');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Request failed:', err.message || err);
       showAlert('error', 'Unexpected error occurred!');
     }
   });
