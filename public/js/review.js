@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
       console.log('Response data:', data);
-      if (res.ok && data.status.toLowerCase() === 'success') {
+      if (res.ok && data.status === 'Success') {
         showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
         setTimeout(() => location.reload(), 1000);
       } else {
