@@ -60,12 +60,6 @@ Built with performance, security, and scalability in mind — deployed on Heroku
 
 ---
 
-## 📸 Screenshots
-
-> _(You can add screenshots later from the deployed Heroku site if you want visual demos here)_
-
----
-
 ## 🛠️ Getting Started Locally
 
 ```bash
@@ -74,3 +68,11 @@ cd natours
 npm install
 npm run dev
 ```
+
+👤 Author
+@wjy4 — Full Stack Developer
+Email : w1097304549@gmail.com
+LinkedIn: https://www.linkedin.com/in/jiayaowang/
+
+📄 License
+This project is licensed under the MIT License — feel free to fork and use.
