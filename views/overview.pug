@@ -58,7 +58,7 @@ block content
               if tour.hasReviewed
                 p.card__text(style='margin-top: 1rem; color: #999') ✅ You already reviewed this tour.
               else
-                button.btn.btn--blue.open-review-modal(
+                button.btn.btn--blue--small.open-review-modal(
                   type='button',
                   data-tour-id=tour._id,
                   data-tour-name=tour.name

@@ -1940,3 +1940,11 @@ html {
 .star.inactive use {
   fill: #ccc;
 }
+
+.card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: flex-start;
+}
