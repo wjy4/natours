@@ -1871,13 +1871,17 @@ html {
 }
 /* Modal layout */
 .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 100;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.25s ease-in;
 }
 
 .modal.hidden {
@@ -1886,18 +1890,20 @@ html {
 
 .modal__overlay {
   position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .modal__window {
-  position: relative;
-  background: #fff;
+  background: white;
   padding: 2rem;
-  max-width: 500px;
+  border-radius: 10px;
   width: 100%;
-  z-index: 101;
-  border-radius: 8px;
-  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  position: relative;
+  animation: scaleIn 0.3s ease-in-out;
 }
 
 .modal__title {
@@ -1909,6 +1915,25 @@ html {
   margin-top: 1.5rem;
   display: flex;
   gap: 1rem;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Rating stars */

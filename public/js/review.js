@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 打开 Review Modal（编辑或新增）
   document.querySelectorAll('.open-review-modal').forEach((btn) => {
+    setTimeout(() => reviewText.focus(), 100); // 自动 focus 文字框
+
     btn.addEventListener('click', () => {
       const isEdit = !!btn.dataset.reviewId;
 
@@ -120,4 +122,25 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStarUI(0);
     modal.dataset.reviewId = '';
   });
+  // ESC 关闭 Modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  // 点击 overlay 背景关闭
+  document.querySelector('.modal__overlay')?.addEventListener('click', () => {
+    closeModal();
+  });
+
+  // 拆分出 closeModal 方法（复用）
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('fade-in');
+    reviewText.value = '';
+    selectedRating = 0;
+    updateStarUI(0);
+    modal.dataset.reviewId = '';
+  }
 });
