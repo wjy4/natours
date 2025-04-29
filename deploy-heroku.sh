@@ -38,3 +38,9 @@ echo "🚀 Pushing to Heroku..."
 git push heroku main
 
 echo "✅ Deployment Complete!"
+
+heroku open
+
+echo "✅ Start Logs"
+
+heroku logs -t
