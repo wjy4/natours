@@ -87,6 +87,66 @@ const getAccount = (req, res) => {
 /**
  * Render: 当前用户的所有已预订的 Tour
  */
+// const getMyTours = catchAsync(async (req, res) => {
+//   const bookings = await Booking.find({ user: req.user.id });
+
+//   let tours = [];
+//   let noBookings = false;
+
+//   if (bookings.length === 0) {
+//     noBookings = true;
+
+//     // 如果没有 bookings, 给他推荐 top 5 tours
+//     tours = await Tour.find()
+//       .sort('-ratingsAverage price')
+//       .limit(5)
+//       .select(
+//         'name price ratingsAverage summary difficulty imageCover slug startDates locations maxGroupSize ratingsQuantity',
+//       );
+
+//     tours = tours.map((tour) => {
+//       const tourObj = tour.toObject();
+
+//       tourObj.startDateFormatted =
+//         tour.startDates && tour.startDates.length > 0
+//           ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+//               month: 'long',
+//               year: 'numeric',
+//             })
+//           : 'Coming soon';
+
+//       tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+//       return tourObj;
+//     });
+//   } else {
+//     const tourIDs = bookings.map((b) => b.tour);
+//     const bookedTours = await Tour.find({ _id: { $in: tourIDs } });
+
+//     tours = bookedTours.map((tour) => {
+//       const tourObj = tour.toObject();
+
+//       tourObj.startDateFormatted =
+//         tour.startDates && tour.startDates.length > 0
+//           ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+//               month: 'long',
+//               year: 'numeric',
+//             })
+//           : 'Coming soon';
+
+//       tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+
+//       return tourObj;
+//     });
+//   }
+
+//   res.status(200).render('overview', {
+//     title: noBookings ? 'Recommended Tours' : 'My Tours',
+//     tours,
+//     noBookings,
+//     showReview: !noBookings, // ✅ 只有真正预订的用户才能评论
+//   });
+// });
 const getMyTours = catchAsync(async (req, res) => {
   const bookings = await Booking.find({ user: req.user.id });
 
@@ -96,7 +156,6 @@ const getMyTours = catchAsync(async (req, res) => {
   if (bookings.length === 0) {
     noBookings = true;
 
-    // 如果没有 bookings, 给他推荐 top 5 tours
     tours = await Tour.find()
       .sort('-ratingsAverage price')
       .limit(5)
@@ -107,15 +166,14 @@ const getMyTours = catchAsync(async (req, res) => {
     tours = tours.map((tour) => {
       const tourObj = tour.toObject();
 
-      tourObj.startDateFormatted =
-        tour.startDates && tour.startDates.length > 0
-          ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
-              month: 'long',
-              year: 'numeric',
-            })
-          : 'Coming soon';
+      tourObj.startDateFormatted = tour.startDates?.[0]
+        ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+            month: 'long',
+            year: 'numeric',
+          })
+        : 'Coming soon';
 
-      tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+      tourObj.locationsCount = tour.locations?.length || 0;
 
       return tourObj;
     });
@@ -123,18 +181,22 @@ const getMyTours = catchAsync(async (req, res) => {
     const tourIDs = bookings.map((b) => b.tour);
     const bookedTours = await Tour.find({ _id: { $in: tourIDs } });
 
+    const reviews = await Review.find({ user: req.user.id });
+
     tours = bookedTours.map((tour) => {
       const tourObj = tour.toObject();
 
-      tourObj.startDateFormatted =
-        tour.startDates && tour.startDates.length > 0
-          ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
-              month: 'long',
-              year: 'numeric',
-            })
-          : 'Coming soon';
+      tourObj.startDateFormatted = tour.startDates?.[0]
+        ? new Date(tour.startDates[0]).toLocaleString('en-UK', {
+            month: 'long',
+            year: 'numeric',
+          })
+        : 'Coming soon';
 
-      tourObj.locationsCount = tour.locations ? tour.locations.length : 0;
+      tourObj.locationsCount = tour.locations?.length || 0;
+      tourObj.hasReviewed = reviews.some(
+        (r) => r.tour.toString() === tour._id.toString(),
+      );
 
       return tourObj;
     });
@@ -144,10 +206,9 @@ const getMyTours = catchAsync(async (req, res) => {
     title: noBookings ? 'Recommended Tours' : 'My Tours',
     tours,
     noBookings,
-    showReview: !noBookings, // ✅ 只有真正预订的用户才能评论
+    showReview: !noBookings, // 用户有 booking 时允许评论
   });
 });
-
 /**
  * Handle: 更新当前用户数据
  */

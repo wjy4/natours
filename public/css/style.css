@@ -1869,3 +1869,74 @@ html {
 .custom-file-upload:hover {
   background-color: #239e73;
 }
+/* Modal layout */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.modal__window {
+  position: relative;
+  background: #fff;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  z-index: 101;
+  border-radius: 8px;
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.1);
+}
+
+.modal__title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal__buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Rating stars */
+.rating-stars {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.star {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.star use {
+  pointer-events: none;
+}
+
+.star.active use {
+  fill: #f9b851;
+}
+
+.star.inactive use {
+  fill: #ccc;
+}

@@ -1,6 +1,7 @@
 extends base
 
-block content  
+
+block content
   main.main
     if noBookings
       .no-bookings-message
@@ -44,29 +45,49 @@ block content
           .card__footer
             p
               span.card__footer-value= '$' + tour.price
-              |  
+              | 
               span.card__footer-text per person
 
             p.card__ratings
               span.card__footer-value= tour.ratingsAverage
-              |  
+              | 
               span.card__footer-text= 'Rating (' + tour.ratingsQuantity + ')'
 
             a.btn.btn--green.btn--small(href='/tour/' + tour.slug) Details
 
             if showReview
-              form(method='POST', action='/reviews')
-                input(type='hidden', name='tour', value=tour._id)
-                .form__group
-                  label(for='review-' + tour._id) Leave a review
-                  input.form__input(type='text', name='review', placeholder='Your thoughts...', id='review-' + tour._id)
-                .form__group
-                  label(for='rating-' + tour._id) Rating
-                  select(name='rating', id='rating-' + tour._id)
-                    option(value='') Select...
-                    option(value='1') 1
-                    option(value='2') 2
-                    option(value='3') 3
-                    option(value='4') 4
-                    option(value='5') 5
-                button.btn.btn--blue(type='submit') Submit
+              if tour.hasReviewed
+                p.card__text(style='margin-top: 1rem; color: #999') ✅ You already reviewed this tour.
+              else
+                button.btn.btn--blue.open-review-modal(
+                  type='button',
+                  data-tour-id=tour._id,
+                  data-tour-name=tour.name
+                ) Leave a review
+
+// Review Modal (place once at the bottom)
+div#reviewModal.modal.hidden
+  .modal__overlay
+  .modal__window
+    h2.modal__title Leave a review for 
+      span#modal-tour-name
+    form#modal-review-form.form-review(method='POST')
+      input(type='hidden', name='tour', id='modal-tour-id')
+      .form__group
+        label(for='modal-review-text') Your review
+        input.form__input(
+          type='text',
+          name='review',
+          id='modal-review-text',
+          placeholder='Write something...'
+        )
+      .form__group
+        label Rating
+        .rating-stars
+          each star in [1,2,3,4,5]
+            svg.star(data-value=star)
+              use(xlink:href='/img/icons.svg#icon-star')
+      .modal__buttons
+        button.btn.btn--green(type='submit') Submit
+        button.btn.btn--gray(type='button', id='close-review-modal') Cancel
+
