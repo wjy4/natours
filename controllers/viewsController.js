@@ -7,6 +7,8 @@ const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+const { formatDistanceToNow } = require('date-fns');
+
 /**
  * Middleware: 处理 alert 通知
  */
@@ -275,10 +277,16 @@ const getMyReviews = catchAsync(async (req, res, next) => {
     path: 'tour',
     select: 'name slug imageCover',
   });
+  const reviewsWithTime = reviews.map((r) => ({
+    ...r.toObject(),
+    relativeTime: formatDistanceToNow(new Date(r.createdAt), {
+      addSuffix: true,
+    }),
+  }));
 
   res.status(200).render('myReviews', {
     title: 'My Reviews',
-    reviews,
+    reviews: reviewsWithTime,
     path: '/my-reviews',
   });
 });

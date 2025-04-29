@@ -2003,3 +2003,11 @@ html {
   display: inline-block;
   margin-right: 1rem;
 }
+.u-center-text p.text {
+  color: #333; /* 或使用 #444 / #555 等深色 */
+  font-size: 1.3rem;
+  background-color: #f8f8f8;
+  padding: 2rem;
+  border-radius: 10px;
+  display: inline-block;
+}
