@@ -8,21 +8,21 @@ block content
 
     .form-layout
       each r in reviews
-        .form-card
-          .form-info
-            p
-              strong Review:
-              |  #{r.review}
-            p
-              strong Rating:
-              |  #{r.rating}
-            p
-              strong User:
-              |  #{r.user.name}
-            p
-              strong Tour:
-              |  #{r.tour.name}
-          .form-actions
-            button.btn.btn--red(data-id=resource._id) Delete
-
+        if r && r._id
+          .form-card
+            .form-info
+              p
+                strong Review:
+                |  #{r.review}
+              p
+                strong Rating:
+                |  #{r.rating}
+              p
+                strong User:
+                |  #{r.user?.name || 'Unknown'}
+              p
+                strong Tour:
+                |  #{r.tour?.name || 'Unknown'}
+            .form-actions
+              button.btn.btn--red(data-id=r._id) Delete
 

@@ -2,27 +2,31 @@ extends base
 
 block content
   .section-admin
-    a.btn.btn--white(href='/account') ← Back to Account
+    a.btn.btn--white(href='/me') ← Back to Account
 
     h2.heading-secondary.u-margin-bottom-medium Manage All Tours
 
-    a.btn.btn--green(href='/create-tour') + Create New Tour
+    .block--right
+      a.btn.btn--green(
+        href='/create-tour',
+        style='float:right; font-size:1.2rem; padding:0.6rem 1.4rem; margin-bottom:2rem;'
+      ) + Create New Tour
 
     .form-layout
       each tour in tours
-        .form-card
-          img.form-avatar(src=`/img/tours/${tour.imageCover}`, alt="Tour Image")
-          .form-info
-            p
-              strong Name:
-              |  #{tour.name}
-            p
-              strong Duration:
-              |  #{tour.duration} days
-            p
-              strong Price:
-              |  $#{tour.price}
-          .form-actions
-            a.btn.btn--green(href=`/update-tour/${tour._id}`) Edit
-            button.btn.btn--red(data-id=resource._id) Delete
-
+        if tour && tour._id
+          .form-card
+            img.form-avatar(src=`/img/tours/${tour.imageCover}`, alt="Tour Image")
+            .form-info
+              p
+                strong Name:
+                |  #{tour.name}
+              p
+                strong Duration:
+                |  #{tour.duration} days
+              p
+                strong Price:
+                |  $#{tour.price}
+            .form-actions
+              a.btn.btn--green(href=`/update-tour/${tour._id}`) Edit
+              button.btn.btn--red(data-id=tour._id) Delete

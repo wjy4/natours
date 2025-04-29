@@ -8,17 +8,17 @@ block content
 
     .form-layout
       each b in bookings
-        .form-card
-          .form-info
-            p
-              strong Tour:
-              |  #{b.tour.name}
-            p
-              strong User:
-              |  #{b.user.name} (#{b.user.email})
-            p
-              strong Price:
-              |  £#{b.price}
-          .form-actions
-            button.btn.btn--red(data-id=resource._id) Delete
-
+        if b && b._id
+          .form-card
+            .form-info
+              p
+                strong Tour:
+                |  #{b.tour?.name || 'Unknown Tour'}
+              p
+                strong User:
+                |  #{b.user?.name || 'Unknown User'} (#{b.user?.email || 'N/A'})
+              p
+                strong Price:
+                |  £#{b.price}
+            .form-actions
+              button.btn.btn--red(data-id=b._id) Delete

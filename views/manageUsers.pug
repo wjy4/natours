@@ -8,19 +8,18 @@ block content
 
     .form-layout
       each user in users
-        .form-card
-          img.form-avatar(src=`/img/users/${user.photo}`, alt=user.name)
-          .form-info
-            p
-              strong Name:
-              |  #{user.name}
-            p
-              strong Email:
-              |  #{user.email}
-            p
-              strong Role:
-              |  #{user.role}
-          .form-actions
-            button.btn.btn--red(data-id=resource._id) Delete
-
-
+        if user && user._id
+          .form-card
+            img.form-avatar(src=`/img/users/${user.photo}`, alt=user.name)
+            .form-info
+              p
+                strong Name:
+                |  #{user.name}
+              p
+                strong Email:
+                |  #{user.email}
+              p
+                strong Role:
+                |  #{user.role}
+            .form-actions
+              button.btn.btn--red(data-id=user._id) Delete
