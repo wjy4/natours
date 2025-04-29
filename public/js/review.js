@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
         setTimeout(() => location.reload(), 1000);
       } else {
+        console.error(err.message);
         showAlert('error', data.message || 'Something went wrong!');
       }
     } catch (err) {
