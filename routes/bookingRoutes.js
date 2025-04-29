@@ -30,10 +30,15 @@ router
   .get(bookingController.getAllBookings)
   .post(bookingController.createBooking);
 
+// routes/bookingRoutes.js
 router
   .route('/:id')
-  .get(bookingController.getBooking)
-  .patch(bookingController.updateBooking)
-  .delete(bookingController.deleteBooking);
+  .get(authController.protect, bookingController.getBooking)
+  .patch(authController.protect, bookingController.updateBooking)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    bookingController.deleteBooking,
+  );
 
 module.exports = router;
