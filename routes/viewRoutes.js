@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const viewsController = require('../controllers/viewsController'); // 确保路径正确
 const tourController = require('../controllers/tourController');
 const reviewController = require('../controllers/reviewController');
+const billingController = require('../controllers/billingController');
 
 const router = express.Router();
 
@@ -67,5 +68,16 @@ router.delete(
   authController.protect,
   reviewController.deleteReview,
 );
+router.get(
+  '/billing',
+  authController.protect,
+  billingController.getBillingPage,
+);
 
+// Optionally: 获取付款详情的 API
+router.get(
+  '/api/v1/billing/payment/:paymentIntentId',
+  authController.protect,
+  billingController.getPaymentDetails,
+);
 module.exports = router;

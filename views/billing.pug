@@ -1,0 +1,18 @@
+extends base
+
+block content
+  .section-header
+    h2.heading-secondary Your Billing History
+
+  form.form
+    .form__group
+      label.form__label(for='paymentIntentId') Enter Payment Intent ID
+      input#paymentIntentId.form__input(type='text', placeholder='e.g. pi_1234...', required)
+    .form__group.right
+      button#fetchPayment.btn.btn--green(type='button') Get Payment Details
+
+  .line
+
+  .billing-details.hidden
+    h3.heading-tertiary Payment Info
+    ul#payment-info-list
