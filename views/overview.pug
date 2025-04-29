@@ -1,66 +1,72 @@
 extends base
 
 block content  
-    main.main
-        if noBookings
-            .no-bookings-message
-                h2.heading-secondary No bookings yet!
-                p.card__text Start exploring our top-rated tours and book your first adventure! 🌟
-                
+  main.main
+    if noBookings
+      .no-bookings-message
+        h2.heading-secondary No bookings yet!
+        p.card__text Start exploring our top-rated tours and book your first adventure! 🌟
 
-        .card-container
-            each tour in tours
-                .card
-                    .card__header
-                        .card__picture
-                            .card__picture-overlay &nbsp;
-                            img.card__picture-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
-                        h3.heading-tertirary
-                            span= tour.name
+    .card-container
+      each tour in tours
+        .card
+          .card__header
+            .card__picture
+              .card__picture-overlay &nbsp;
+              img.card__picture-img(src='/img/tours/' + tour.imageCover, alt=tour.name)
+            h3.heading-tertirary
+              span= tour.name
 
-                    .card__details
-                        h4.card__sub-heading=`${tour.difficulty} ${tour.duration}-day tour`
-                        p.card__text= tour.summary
-                        .card__data
-                            svg.card__icon
-                                use(xlink:href='/img/icons.svg#icon-map-pin')
-                            span= tour.startLocation ? tour.startLocation.description : 'Location TBC'
-                        .card__data
-                            svg.card__icon
-                                use(xlink:href='/img/icons.svg#icon-calendar')
-                            span= tour.startDateFormatted
-                        .card__data
-                            svg.card__icon
-                                use(xlink:href='/img/icons.svg#icon-flag')
-                            span= tour.locationsCount + ' stops'
-                        .card__data
-                            svg.card__icon
-                                use(xlink:href='/img/icons.svg#icon-user')
-                            span= tour.maxGroupSize + ' people'
+          .card__details
+            h4.card__sub-heading #{tour.difficulty} #{tour.duration}-day tour
+            p.card__text= tour.summary
 
-                    .card__footer
-                        p
-                            span.card__footer-value= '$' + tour.price
-                            | 
-                            span.card__footer-text per person
-                        p.card__ratings
-                            span.card__footer-value= tour.ratingsAverage
-                            | 
-                            span.card__footer-text= 'Rating (' + tour.ratingsQuantity + ')'
-                        a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
-                        if showReview
-                            form(method='POST', action=`/reviews`)
-                                input(type='hidden', name='tour', value=tour._id)
-                                .form__group
-                                    label(for=`review-${tour._id}`) Leave a review
-                                    input#review-${tour._id}.form__input(type='text', name='review', placeholder='Your thoughts...')
-                                .form__group
-                                    label(for=`rating-${tour._id}`) Rating
-                                    select(name='rating', id=`rating-${tour._id}`)
-                                        option(value='') Select...
-                                        option(value='1') 1
-                                        option(value='2') 2
-                                        option(value='3') 3
-                                        option(value='4') 4
-                                        option(value='5') 5
-                                button.btn.btn--blue(type='submit') Submit
+            .card__data
+              svg.card__icon
+                use(xlink:href='/img/icons.svg#icon-map-pin')
+              span= tour.startLocation ? tour.startLocation.description : 'Location TBC'
+
+            .card__data
+              svg.card__icon
+                use(xlink:href='/img/icons.svg#icon-calendar')
+              span= tour.startDateFormatted
+
+            .card__data
+              svg.card__icon
+                use(xlink:href='/img/icons.svg#icon-flag')
+              span= tour.locationsCount + ' stops'
+
+            .card__data
+              svg.card__icon
+                use(xlink:href='/img/icons.svg#icon-user')
+              span= tour.maxGroupSize + ' people'
+
+          .card__footer
+            p
+              span.card__footer-value= '$' + tour.price
+              |  
+              span.card__footer-text per person
+
+            p.card__ratings
+              span.card__footer-value= tour.ratingsAverage
+              |  
+              span.card__footer-text= 'Rating (' + tour.ratingsQuantity + ')'
+
+            a.btn.btn--green.btn--small(href='/tour/' + tour.slug) Details
+
+            if showReview
+              form(method='POST', action='/reviews')
+                input(type='hidden', name='tour', value=tour._id)
+                .form__group
+                  label(for='review-' + tour._id) Leave a review
+                  input.form__input(type='text', name='review', placeholder='Your thoughts...', id='review-' + tour._id)
+                .form__group
+                  label(for='rating-' + tour._id) Rating
+                  select(name='rating', id='rating-' + tour._id)
+                    option(value='') Select...
+                    option(value='1') 1
+                    option(value='2') 2
+                    option(value='3') 3
+                    option(value='4') 4
+                    option(value='5') 5
+                button.btn.btn--blue(type='submit') Submit
