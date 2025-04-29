@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       const data = await res.json();
-
+      console.log('Response data:', data);
       if (res.ok && data.status === 'success') {
         showAlert('success', reviewId ? 'Review updated!' : 'Review created!');
         setTimeout(() => location.reload(), 1000);
